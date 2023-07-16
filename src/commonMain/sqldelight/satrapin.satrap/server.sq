@@ -1,0 +1,45 @@
+import kotlin.Boolean;
+
+CREATE TABLE IF NOT EXISTS serverEntity (
+  server_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  server_url TEXT NOT NULL,
+  title TEXT NOT NULL,
+  organization Text,
+  description TEXT NOT NULL,
+  sync INTEGER AS Boolean NOT NULL DEFAULT 0, -- Should this server be overriden with yaml config? Matters only for values defined in this table,
+  customServer INTEGER AS Boolean NOT NULL DEFAULT 0
+);
+
+getLastInsertedId:
+SELECT last_insert_rowid();
+
+insertServer:
+INSERT OR REPLACE
+INTO serverEntity(server_id, server_url, title, organization, description, sync, customServer)
+VALUES (?, ?, ?, ?, ?,?, ?);
+
+getAllServers:
+SELECT *
+FROM serverEntity;
+
+getServerById:
+SELECT *
+FROM serverEntity
+WHERE server_id = :id;
+
+deleteServerById:
+DELETE FROM serverEntity
+WHERE server_id = :id;
+
+getAllData:
+SELECT server.*, tag.tag_id, tag.tag, tag.customTag, user.user_id, user.username, user.userLevelDescription, user.role, user.customUser
+FROM serverEntity AS server
+LEFT JOIN tagEntity AS tag ON server.server_id = tag.server_id
+LEFT JOIN userEntity AS user ON server.server_id = user.server_id;
+
+getServerCompleteById:
+SELECT server.*, tag.tag_id, tag.tag, tag.customTag, user.user_id, user.username, user.userLevelDescription, user.role, user.customUser
+FROM serverEntity AS server
+LEFT JOIN tagEntity AS tag ON server.server_id = tag.server_id
+LEFT JOIN userEntity AS user ON server.server_id = user.server_id
+WHERE server.server_id = :serverId;

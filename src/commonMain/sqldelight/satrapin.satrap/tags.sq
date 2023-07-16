@@ -1,0 +1,32 @@
+import kotlin.Boolean;
+
+CREATE TABLE IF NOT EXISTS tagEntity (
+  tag_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  server_id INTEGER NOT NULL,
+  tag TEXT NOT NULL,
+  customTag INTEGER AS Boolean NOT NULL DEFAULT 0, -- self created Tag not from sync
+  FOREIGN KEY (server_id) REFERENCES serverEntity(server_id) ON DELETE CASCADE
+);
+
+insertTag:
+INSERT OR REPLACE
+INTO tagEntity(tag_id, server_id, tag, customTag)
+VALUES (?, ?, ?, ?);
+
+getTagById:
+SELECT *
+FROM tagEntity
+WHERE tag_id = :id;
+
+getAllTags:
+SELECT *
+FROM tagEntity;
+
+getTagsByServerId:
+SELECT *
+FROM tagEntity
+WHERE server_id = ?;
+
+deleteTagById:
+DELETE FROM tagEntity
+WHERE tag_id = :id;

@@ -1,0 +1,34 @@
+import kotlin.Boolean;
+
+CREATE TABLE IF NOT EXISTS userEntity (
+  user_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  server_id INTEGER NOT NULL,
+  username TEXT NOT NULL,
+  role TEXT NOT NULL, -- Admin, Read-Only etc.
+  customUser INTEGER AS Boolean NOT NULL DEFAULT 0, -- self created User
+  userLevelDescription TEXT NOT NULL, -- default inherits description from server.sq
+  FOREIGN KEY (server_id) REFERENCES serverEntity(server_id) ON DELETE CASCADE
+);
+
+insertUser:
+INSERT OR REPLACE
+INTO userEntity(user_id, server_id, username, role, customUser, userLevelDescription)
+VALUES (?, ?, ?, ?, ?, ?);
+
+getUserById:
+SELECT *
+FROM userEntity
+WHERE user_id = :userId;
+
+getAllUser:
+SELECT *
+FROM userEntity;
+
+getUsersByServerId:
+SELECT *
+FROM userEntity
+WHERE server_id = ?;
+
+deleteUserById:
+DELETE FROM userEntity
+WHERE user_id = :id;

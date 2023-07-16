@@ -1,0 +1,18 @@
+CREATE TABLE IF NOT EXISTS settingsEntity (
+  setting TEXT NOT NULL PRIMARY KEY UNIQUE,
+  value TEXT NOT NULL
+);
+
+insertSetting:
+INSERT OR REPLACE
+INTO settingsEntity
+VALUES ?;
+
+getSetting:
+SELECT *
+FROM settingsEntity
+WHERE setting = :setting;
+
+getAllSettings:
+SELECT *
+FROM settingsEntity;

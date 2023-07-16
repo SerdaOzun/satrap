@@ -1,0 +1,2 @@
+-keep class org.sqlite.** { *; }
+-keep class kotlinx.coroutines.swing.SwingDispatcherFactory
