@@ -148,7 +148,7 @@ private fun ButtonRow(modifier: Modifier, serverVm: ServerViewModel, navigator: 
                     navigator.navigate(Screen.ServerListScreen.name)
                 }
             },
-            modifier = Modifier.padding(end = MaterialTheme.spacing.medium).carbonTheme(),
+            modifier = Modifier.padding(end = MaterialTheme.spacing.small).carbonTheme(),
         ) {
             Text("Save", color = MaterialTheme.colors.onPrimary, modifier = it)
         }

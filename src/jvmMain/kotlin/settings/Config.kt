@@ -18,7 +18,7 @@ class Config(
 
     var changesMade by mutableStateOf(false)
 
-    var terminal by mutableStateOf("")
+    var terminal by mutableStateOf(Terminal.NONE)
     var shell by mutableStateOf("")
 
     fun onEvent(configEvent: ConfigEvent) = when (configEvent) {
@@ -42,15 +42,15 @@ class Config(
         getSettingsFromDB()
     }
 
-    private fun getDefaultTerminal(): String = when (os) {
-        OS.WINDOWS -> "cmd.exe"
-        OS.MACOS -> "Terminal"
-        else -> "gnome-terminal"
+    private fun getDefaultTerminal(): Terminal = when (os) {
+        OS.WINDOWS -> Terminal.CMD
+        OS.MACOS -> Terminal.TERMINAL
+        else -> Terminal.GNOME_TERMINAL
     }
 
     private fun resetToDefaultSettings() {
         viewModelScope.launch {
-            settingsDataSource.insertSetting(Setting(SettingOptions.TERMINAL.label, getDefaultTerminal()))
+            settingsDataSource.insertSetting(Setting(SettingOptions.TERMINAL.label, getDefaultTerminal().label))
             settingsDataSource.insertSetting(Setting(SettingOptions.SHELL.label, "bash"))
         }
 
@@ -61,7 +61,7 @@ class Config(
 
     private fun saveTerminalAndShell() {
         viewModelScope.launch {
-            settingsDataSource.insertSetting(Setting(SettingOptions.TERMINAL.label, terminal))
+            settingsDataSource.insertSetting(Setting(SettingOptions.TERMINAL.label, terminal.label))
             if (os == OS.LINUX) {
                 settingsDataSource.insertSetting(Setting(SettingOptions.SHELL.label, shell))
             }
@@ -74,7 +74,7 @@ class Config(
 
     private fun getSettingsFromDB() {
         viewModelScope.launch {
-            terminal = settingsDataSource.getSetting(SettingOptions.TERMINAL.label)?.value ?: getDefaultTerminal()
+            terminal = Terminal.byLabel(settingsDataSource.getSetting(SettingOptions.TERMINAL.label)?.value) ?: getDefaultTerminal()
             shell = settingsDataSource.getSetting(SettingOptions.SHELL.label)?.value ?: "bash"
         }
     }

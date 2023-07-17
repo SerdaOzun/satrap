@@ -1,13 +1,13 @@
 package settings
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import config
+import serverList.ServerHeader
+import ui.components.CarbonCombobox
 import ui.components.CarbonTextButton
 import ui.components.CarbonTextfield
 import ui.components.carbonTheme
@@ -19,15 +19,15 @@ import util.os
 fun SettingsScreen() {
     Column(modifier = Modifier.padding(MaterialTheme.spacing.medium)) {
 
-        CarbonTextfield(
-            label = "Terminal Program",
-            value = config.terminal,
-            onValueChange = {
-                config.changesMade = true
-                config.terminal = it
-            },
-            modifier = Modifier.padding(bottom = MaterialTheme.spacing.small)
-        )
+
+        CarbonCombobox(
+            modifier = Modifier.width(IntrinsicSize.Min).padding(bottom = MaterialTheme.spacing.medium),
+            config.terminal.label,
+            Terminal.values().filter { it.os == os }.map { it.label }
+        ) { t ->
+            config.changesMade = true
+            config.terminal = Terminal.byLabel(t)
+        }
 
         if (os == OS.LINUX) {
             CarbonTextfield(
@@ -43,7 +43,8 @@ fun SettingsScreen() {
 
         Row {
             CarbonTextButton(
-                modifier = Modifier.padding(end = MaterialTheme.spacing.small).carbonTheme(isEnabled = config.changesMade),
+                modifier = Modifier.padding(end = MaterialTheme.spacing.small)
+                    .carbonTheme(isEnabled = config.changesMade),
                 onClick = { config.onEvent(ConfigEvent.Save) },
                 enabled = config.changesMade
             ) {

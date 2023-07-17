@@ -1,6 +1,7 @@
 package util
 
 import config
+import settings.Terminal
 import java.io.File
 
 
@@ -13,8 +14,21 @@ fun runCommand(command: String) {
 }
 
 private fun executeOnWindows(command: String) {
-    val requestArray = "${config.terminal} /c start ${config.terminal} /k $command".split(" ").toTypedArray()
-    Runtime.getRuntime().exec(requestArray)
+    when (config.terminal) {
+        Terminal.CMD -> {
+            val requestArray = "cmd.exe /c start cmd.exe /k $command".split(" ").toTypedArray()
+            Runtime.getRuntime().exec(requestArray)
+        }
+
+        Terminal.POWERSHELL -> {
+            val builder = ProcessBuilder("cmd.exe", "/c", "start", "powershell.exe", "-NoExit", "-Command", command)
+            val process = builder.inheritIO().start()
+            process.waitFor()
+        }
+
+        else -> {}
+    }
+
 }
 
 private fun executeOnMac(command: String) {

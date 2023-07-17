@@ -194,10 +194,10 @@ fun RowScope.TableCellWithIcon(text: String, ascending: Boolean, modifier: Modif
 
 @Composable
 fun RowScope.TableIconButton(
-    icon: ImageVector = Icons.Filled.PlayArrow, modifier: Modifier, onClick: () -> Unit
+    icon: ImageVector = Icons.Filled.PlayArrow, modifier: Modifier,  onClick: () -> Unit
 ) {
     IconButton(onClick = onClick, modifier = modifier) {
-        Icon(icon, "")
+        Icon(icon, "", tint = MaterialTheme.colors.secondaryVariant)
     }
 }
 
