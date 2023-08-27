@@ -2,8 +2,8 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
     kotlin("multiplatform")
-    id("org.jetbrains.compose")
-    id("app.cash.sqldelight") version "2.0.0-rc01"
+    id("org.jetbrains.compose") version "1.4.3"
+    id("app.cash.sqldelight") version "2.0.0"
 }
 
 group = "satrapin.satrap"
@@ -41,8 +41,6 @@ kotlin {
 }
 
 compose {
-    kotlinCompilerPlugin.set(dependencies.compiler.forKotlin("1.8.20"))
-    kotlinCompilerPluginArgs.add("suppressKotlinVersionCompatibilityCheck=1.8.21")
     desktop {
         application {
             mainClass = "MainKt"
