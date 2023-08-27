@@ -37,8 +37,8 @@ fun FilterPanel(modifier: Modifier, serverVM: ServerViewModel = AppViewModels.se
             Text(text = "User", fontSize = MaterialTheme.fontSize.small)
             CarbonMultiselectCombobox(
                 modifier = Modifier,
-                serverVM.selectedUsers,
-                servers.flatMap { it.users }.distinct(),
+                serverVM.selectedUsers.distinctBy { it.username },
+                servers.flatMap { it.users }.distinctBy { it.username },
                 onClick = {
                     if (serverVM.selectedUsers.contains(it)) serverVM.selectedUsers.remove(it)
                     else serverVM.selectedUsers.add(it)

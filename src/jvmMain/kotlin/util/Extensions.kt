@@ -7,18 +7,18 @@ fun List<ServerComplete>.filterSearch(serverVM: ServerViewModel) = filter {
     it.server.serverUrl.lowercase().contains(serverVM.searchText.lowercase()) ||
             it.server.title.lowercase().contains(serverVM.searchText.lowercase())
 }
-    .filter {
+    .filter { serverList ->
         if (serverVM.selectedUsers.isNotEmpty()) {
-            it.users.any { u ->
+            serverList.users.any { u ->
                 if (serverVM.selectedUsers.isNotEmpty()) {
-                    serverVM.selectedUsers.contains(u)
+                    serverVM.selectedUsers.map { selectedUser -> selectedUser.username }.contains(u.username)
                 } else true
             }
         } else true
     }
-    .filter {
+    .filter { serverList ->
         if (serverVM.selectedTags.isNotEmpty()) {
-            it.tags.any { t ->
+            serverList.tags.any { t ->
                 if (serverVM.selectedTags.isNotEmpty()) {
                     serverVM.selectedTags.contains(t)
                 } else true
