@@ -20,11 +20,11 @@
           run: chmod +x ./gradlew
         - name: Publish
           run: ./gradlew packageReleaseDistributionForCurrentOS
-        - name: Release
+        - name: Upload Artifact
           uses: softprops/action-gh-release@v1
           if: startsWith(github.ref, 'refs/tags/')
           with:
             files: |
-              *.dmg
-              *.msi
-              *.deb
+              build/compose/binaries/main-release/dmg/*.dmg
+              build/compose/binaries/main-release/deb/*.deb
+              build/compose/binaries/main-release/msi/*.msi
