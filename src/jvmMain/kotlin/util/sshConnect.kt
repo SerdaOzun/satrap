@@ -32,12 +32,28 @@ private fun executeOnWindows(command: String) {
 }
 
 private fun executeOnMac(command: String) {
-    val script = """
-    tell application "${config.terminal}"
-        do script "$command"
-        activate
-    end tell
-""".trimIndent()
+    val script = when (config.terminal) {
+        Terminal.TERMINAL -> {
+            """
+            tell application "${config.terminal}"
+                do script "$command"
+               activate
+            end tell
+            """.trimIndent()
+        }
+
+        Terminal.ITERM -> {
+            """
+            tell application "${config.terminal}"
+               set newWindow to (create window with profile command "$command")
+            end tell
+            """.trimIndent()
+        }
+
+        else -> {
+            ""
+        }
+    }
 
     val tempFile = File.createTempFile("script", ".scpt")
     tempFile.writeText(script)
