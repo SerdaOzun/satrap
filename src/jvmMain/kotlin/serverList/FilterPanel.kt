@@ -51,7 +51,7 @@ fun FilterPanel(modifier: Modifier, serverVM: ServerViewModel = AppViewModels.se
             CarbonMultiselectCombobox(
                 modifier = Modifier.weight(0.3f),
                 serverVM.selectedTags,
-                servers.flatMap { it.tags }.distinct(),
+                servers.flatMap { it.tags }.distinctBy { it.tag },
                 onClick = {
                     if (serverVM.selectedTags.contains(it)) serverVM.selectedTags.remove(it)
                     else serverVM.selectedTags.add(it)
