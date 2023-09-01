@@ -1,6 +1,6 @@
 package util
 
-val os: OS = run {
+val currentOS: OS = run {
     val os = System.getProperty("os.name").lowercase()
 
     when {

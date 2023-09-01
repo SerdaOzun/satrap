@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
 import util.OS
-import util.os
+import util.currentOS
 
 /**
  * Read and write all available Setings from and to the database.
@@ -23,7 +23,7 @@ class Config(
     var changesMade by mutableStateOf(false)
 
     //All Settings available
-    var terminal by mutableStateOf(Terminal.NONE)
+    var terminal by mutableStateOf(Terminal.entries.first { it.os == currentOS })
     var shell by mutableStateOf("")
 
     fun onEvent(configEvent: ConfigEvent) = when (configEvent) {
@@ -46,7 +46,7 @@ class Config(
         getSettingsFromDB()
     }
 
-    private fun getDefaultTerminal(): Terminal = when (os) {
+    private fun getDefaultTerminal(): Terminal = when (currentOS) {
         OS.WINDOWS -> Terminal.CMD
         OS.MACOS -> Terminal.TERMINAL
         else -> Terminal.GNOME_TERMINAL
@@ -66,7 +66,7 @@ class Config(
     private fun saveTerminalAndShell() {
         viewModelScope.launch {
             settingsDataSource.insertSetting(Setting(SettingOptions.TERMINAL.label, terminal.label))
-            if (os == OS.LINUX) {
+            if (currentOS == OS.LINUX) {
                 settingsDataSource.insertSetting(Setting(SettingOptions.SHELL.label, shell))
             }
         }

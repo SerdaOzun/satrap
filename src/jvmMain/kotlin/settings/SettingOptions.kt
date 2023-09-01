@@ -11,7 +11,6 @@ enum class SettingOptions(val label: String) {
 }
 
 enum class Terminal(val label: String, val os: OS) {
-    NONE("", OS.UNKNOWN),
     CMD("cmd.exe", OS.WINDOWS),
     POWERSHELL("powershell.exe", OS.WINDOWS),
     TERMINAL("Terminal", OS.MACOS),
@@ -19,6 +18,8 @@ enum class Terminal(val label: String, val os: OS) {
     GNOME_TERMINAL("gnome-terminal", OS.LINUX);
 
     companion object {
-        fun byLabel(label: String?) = entries.firstOrNull { label == it.label }
+        private val labelMap = entries.associateBy { it.label }
+
+        fun byLabel(label: String?) = labelMap[label]
     }
 }

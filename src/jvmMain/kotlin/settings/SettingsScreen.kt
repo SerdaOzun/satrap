@@ -3,17 +3,16 @@ package settings
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import config
-import serverList.ServerHeader
 import ui.components.CarbonCombobox
 import ui.components.CarbonTextButton
 import ui.components.CarbonTextfield
 import ui.components.carbonTheme
 import ui.theme.spacing
 import util.OS
-import util.os
+import util.currentOS
 
 @Composable
 fun SettingsScreen() {
@@ -23,14 +22,14 @@ fun SettingsScreen() {
         CarbonCombobox(
             modifier = Modifier.width(IntrinsicSize.Min).padding(bottom = MaterialTheme.spacing.medium),
             config.terminal.label,
-            Terminal.values().filter { it.os == os }.map { it.label }
+            Terminal.entries.filter { it.os == currentOS }.map { it.label }
         ) { t ->
             config.changesMade = true
-            config.terminal = Terminal.byLabel(t)
+            config.terminal = Terminal.byLabel(t)!!
         }
 
         //todo most likely remove. Only allow users to choose their shell from a combobox with tested shells
-        if (os == OS.LINUX) {
+        if (currentOS == OS.LINUX) {
             CarbonTextfield(
                 label = "Shell",
                 value = config.shell,

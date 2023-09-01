@@ -2,7 +2,7 @@ import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import satrapin.satrap.Database
 import util.OS
-import util.os
+import util.currentOS
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -21,7 +21,7 @@ actual class DriverFactory {
  */
 private fun getDatabaseDirectory(): Path {
 
-    val path = when (os) {
+    val path = when (currentOS) {
         OS.WINDOWS -> {
             Paths.get(System.getenv("APPDATA"), "satrap")
         }
@@ -35,7 +35,7 @@ private fun getDatabaseDirectory(): Path {
         }
 
         else -> {
-            throw UnsupportedOperationException("Unsupported operating system: $os")
+            throw UnsupportedOperationException("Unsupported operating system: $currentOS")
         }
     }
 

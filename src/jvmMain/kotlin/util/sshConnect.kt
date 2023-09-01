@@ -6,7 +6,7 @@ import java.io.File
 
 
 fun runCommand(command: String) {
-    when (os) {
+    when (currentOS) {
         OS.WINDOWS -> executeOnWindows(command)
         OS.MACOS -> executeOnMac(command)
         else -> executeOnUbuntu(command)
