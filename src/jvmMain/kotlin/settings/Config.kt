@@ -33,7 +33,7 @@ class Config(
 
     init {
         //Have the settings already been initialized once?
-        var settingsInitialized: Boolean = true
+        var settingsInitialized = true
         viewModelScope.launch {
             settingsInitialized = settingsDataSource.getAllSettings().isNotEmpty()
         }
