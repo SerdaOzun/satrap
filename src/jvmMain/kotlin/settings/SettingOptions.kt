@@ -19,6 +19,6 @@ enum class Terminal(val label: String, val os: OS) {
     GNOME_TERMINAL("gnome-terminal", OS.LINUX);
 
     companion object {
-        fun byLabel(label: String?) = entries.first { label == it.label }
+        fun byLabel(label: String?) = entries.firstOrNull { label == it.label }
     }
 }
