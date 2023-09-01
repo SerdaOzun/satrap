@@ -12,12 +12,17 @@ import moe.tlaster.precompose.viewmodel.viewModelScope
 import util.OS
 import util.os
 
+/**
+ * Read and write all available Setings from and to the database.
+ * @see SettingOptions for available settings which are also top level Variables in this class
+ */
 class Config(
     private val settingsDataSource: SettingsDataSource = AppDatabase.sqlDelightSettings
 ) : ViewModel() {
 
     var changesMade by mutableStateOf(false)
 
+    //All Settings available
     var terminal by mutableStateOf(Terminal.NONE)
     var shell by mutableStateOf("")
 
@@ -29,7 +34,6 @@ class Config(
     init {
         //Have the settings already been initialized once?
         var settingsInitialized: Boolean = true
-
         viewModelScope.launch {
             settingsInitialized = settingsDataSource.getAllSettings().isNotEmpty()
         }
@@ -81,6 +85,6 @@ class Config(
 }
 
 sealed class ConfigEvent {
-    object Reset : ConfigEvent()
-    object Save : ConfigEvent()
+    data object Reset : ConfigEvent()
+    data object Save : ConfigEvent()
 }

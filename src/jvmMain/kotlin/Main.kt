@@ -45,7 +45,6 @@ val config by lazy { Config() }
 fun App() {
     val navigator = rememberNavigator()
 
-
     Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.background)) {
         Row(modifier = Modifier.fillMaxWidth().background(MaterialTheme.colors.onBackground)) {
             Text(

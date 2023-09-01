@@ -24,13 +24,13 @@ import serverList.TableCell
 import serverList.TableImgButton
 import ui.theme.spacing
 
+/**
+ * Displays Environment Variables including those of the current JVM Process */
 @Composable
 fun EnvironmentVarsScreen(
     navigator: Navigator,
     envVarsViewModel: EnvVarsViewModel = AppViewModels.envVarVm
 ) {
-
-
     Column(Modifier.fillMaxSize().padding(MaterialTheme.spacing.medium)) {
         Headers(Modifier.weight(0.05f))
 
@@ -70,7 +70,6 @@ fun EnvironmentVarsScreen(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun Headers(modifier: Modifier) {
     Row(modifier.background(Color.Gray), verticalAlignment = Alignment.CenterVertically) {

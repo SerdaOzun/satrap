@@ -29,6 +29,7 @@ fun SettingsScreen() {
             config.terminal = Terminal.byLabel(t)
         }
 
+        //todo most likely remove. Only allow users to choose their shell from a combobox with tested shells
         if (os == OS.LINUX) {
             CarbonTextfield(
                 label = "Shell",

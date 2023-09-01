@@ -2,7 +2,10 @@ package domain
 
 import satrapinsatrap.TagEntity
 
-
+/**
+ * Write and retrieve Tags which allow Users to organize their servers
+ * @see Tag
+ */
 interface TagDataSource {
     suspend fun insertTag(tag: Tag)
     suspend fun getTagById(id: Long): Tag?

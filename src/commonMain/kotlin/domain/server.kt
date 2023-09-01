@@ -5,6 +5,11 @@ import satrapinsatrap.GetAllData
 import satrapinsatrap.GetServerCompleteById
 import satrapinsatrap.ServerEntity
 
+/**
+ * Write and Retrieve Servers to which Users can connect via ssh. For the possible data
+ * @see Server for data contents and
+ * @see ServerComplete for additional data bundled with the Server such as users and tags
+ */
 interface ServerDataSource {
     suspend fun insertServer(server: Server): Long?
     suspend fun getServerById(id: Long): Server?
@@ -36,7 +41,7 @@ data class Server(
 )
 
 /**
- * Includes the Server with all its tags and users
+ * Includes the Server with additional data
  */
 data class ServerComplete(
     val server: Server,

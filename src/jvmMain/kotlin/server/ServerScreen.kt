@@ -9,6 +9,9 @@ import moe.tlaster.precompose.navigation.Navigator
 import server.userAndTagTab.UserTagTab
 import ui.theme.spacing
 
+/**
+ * Screen for editing Server details
+ */
 @Composable
 fun ServerScreen(
     navigator: Navigator,

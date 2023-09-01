@@ -2,6 +2,9 @@ package settings
 
 import util.OS
 
+/**
+ * All Settings the user can configure in the Settingsmenu
+ */
 enum class SettingOptions(val label: String) {
     TERMINAL("Terminal"),
     SHELL("Shell")

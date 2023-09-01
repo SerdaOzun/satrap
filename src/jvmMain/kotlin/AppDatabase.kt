@@ -3,6 +3,9 @@ import data.SqlDelightSettings
 import data.SqlDelightTag
 import data.SqlDelightUser
 
+/**
+ * Contains the necessary objects with which to interact with the database
+ */
 object AppDatabase {
     private val database = createDatabase(DriverFactory())
 

@@ -18,6 +18,7 @@ fun NavigationBar(modifier: Modifier, navigator: Navigator) {
 
     var selectedIndex by remember { mutableStateOf(0) }
 
+    //Display all Screens as a Navigationbutton as defined in the Screen enum
     Column(
         modifier = modifier.fillMaxHeight()
             .width(IntrinsicSize.Max)
@@ -26,7 +27,7 @@ fun NavigationBar(modifier: Modifier, navigator: Navigator) {
     ) {
         Column {
             Divider(color = MaterialTheme.colors.onSurface)
-            Screen.values().filter { it.navItem }.forEachIndexed { index, it ->
+            Screen.entries.filter { it.navItem }.forEachIndexed { index, it ->
                 Row(
                     modifier = Modifier.fillMaxWidth()
                         .background(if (selectedIndex == index) MaterialTheme.colors.onSurface else Color.Transparent)
@@ -41,7 +42,7 @@ fun NavigationBar(modifier: Modifier, navigator: Navigator) {
             }
         }
 
-        //Settings has its special Index -1
+        //Settings has its special Index -1, as it should not have a "selected" Attribute
         Row(
             modifier = Modifier.fillMaxWidth()//.onClick { navigator.navigate(Screen.SettingsScreen.name) }
                 .background(if (selectedIndex == -1) MaterialTheme.colors.onSurface else Color.Transparent)

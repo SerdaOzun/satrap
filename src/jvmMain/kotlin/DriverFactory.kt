@@ -16,6 +16,9 @@ actual class DriverFactory {
 }
 
 
+/**
+ * Creates the directory in which the Database will be saved on the User's system
+ */
 private fun getDatabaseDirectory(): Path {
 
     val path = when (os) {

@@ -18,6 +18,9 @@ import ui.components.CarbonTextfield
 import ui.components.carbonTheme
 import ui.theme.spacing
 
+/**
+ * Left Side of the Server screen concerning details of the server
+ */
 @Composable
 internal fun ServerTab(
     modifier: Modifier,
@@ -98,7 +101,7 @@ internal fun ServerTab(
 
 
         //Buttons
-        ButtonRow(
+        SaveAndCancelButton(
             Modifier.padding(bottom = MaterialTheme.spacing.medium, start = MaterialTheme.spacing.medium),
             serverVm,
             navigator
@@ -107,6 +110,9 @@ internal fun ServerTab(
     }
 }
 
+/**
+ * Display a Label together with a Textfield in a Row
+ */
 @Composable
 private fun LabelAndField(
     modifier: Modifier,
@@ -133,7 +139,7 @@ private fun LabelAndField(
 }
 
 @Composable
-private fun ButtonRow(modifier: Modifier, serverVm: ServerViewModel, navigator: Navigator) {
+private fun SaveAndCancelButton(modifier: Modifier, serverVm: ServerViewModel, navigator: Navigator) {
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.Bottom,

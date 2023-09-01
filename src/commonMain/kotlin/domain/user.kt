@@ -2,6 +2,10 @@ package domain
 
 import satrapinsatrap.UserEntity
 
+/**
+ * Write and retrieve Users with which you can login into Servers
+ * @see User for data
+ */
 interface UserDataSource {
     suspend fun insertUser(user: User)
     suspend fun getUserById(id: Long): User?

@@ -10,6 +10,10 @@ import androidx.compose.ui.Modifier
 import moe.tlaster.precompose.navigation.Navigator
 import ui.theme.spacing
 
+/**
+ * List of Servers.
+ * Add, Edit or Delete Servers. Or connect to them
+ */
 @Composable
 fun ServerListScreen(navigator: Navigator) {
     Column(modifier = Modifier.padding(MaterialTheme.spacing.medium)) {
