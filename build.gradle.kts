@@ -36,7 +36,13 @@ kotlin {
                 api("moe.tlaster:precompose-viewmodel:$precompose_version")
             }
         }
-        val jvmTest by getting
+        val jvmTest by getting {
+            dependencies {
+                implementation(kotlin("test-testng"))
+                implementation("io.kotest:kotest-assertions-core-jvm:5.6.2")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
+            }
+        }
     }
 }
 
@@ -80,4 +86,8 @@ sqldelight {
             version = 1
         }
     }
+}
+
+tasks.withType<Test> {
+    useTestNG()
 }
