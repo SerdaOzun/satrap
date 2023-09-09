@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
+import io.github.oshai.kotlinlogging.KotlinLogging
 import moe.tlaster.precompose.PreComposeWindow
 import moe.tlaster.precompose.navigation.rememberNavigator
 import navigation.NavigationBar
@@ -19,10 +20,14 @@ import settings.Config
 import ui.theme.AppTheme
 import ui.theme.IbmCarbonTheme
 import ui.theme.spacing
+import util.currentOS
 import java.awt.Dimension
 
 
 fun main() {
+    val logger = KotlinLogging.logger {}
+    logger.info { "Running on OS: $currentOS" }
+
     application {
         PreComposeWindow(
             state = WindowState(size = DpSize(1200.dp, 800.dp)), title = "Satrap",

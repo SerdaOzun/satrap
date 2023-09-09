@@ -3,7 +3,7 @@ package data
 import domain.Tag
 import domain.TagDataSource
 import domain.toTag
-import satrapin.satrap.Database
+import satrapco.satrap.Database
 
 class SqlDelightTag(db: Database) : TagDataSource {
 

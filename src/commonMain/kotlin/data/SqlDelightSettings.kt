@@ -4,7 +4,7 @@ import domain.Setting
 import domain.SettingsDataSource
 import domain.toSetting
 import domain.toSettingsEntity
-import satrapin.satrap.Database
+import satrapco.satrap.Database
 
 class SqlDelightSettings(db: Database) : SettingsDataSource {
     private val queries = db.settingsQueries

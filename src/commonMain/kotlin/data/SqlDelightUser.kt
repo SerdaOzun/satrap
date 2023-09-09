@@ -3,7 +3,7 @@ package data
 import domain.User
 import domain.UserDataSource
 import domain.toUser
-import satrapin.satrap.Database
+import satrapco.satrap.Database
 
 class SqlDelightUser(db: Database) : UserDataSource {
 

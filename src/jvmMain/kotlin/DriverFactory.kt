@@ -1,6 +1,6 @@
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
-import satrapin.satrap.Database
+import satrapco.satrap.Database
 import util.OS
 import util.currentOS
 import java.nio.file.Files

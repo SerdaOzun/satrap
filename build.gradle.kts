@@ -6,7 +6,7 @@ plugins {
     id("app.cash.sqldelight") version "2.0.0"
 }
 
-group = "satrapin.satrap"
+group = "satrapco.satrap"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -34,6 +34,9 @@ kotlin {
                 implementation("app.cash.sqldelight:primitive-adapters:$sqldelight_version")
                 api("moe.tlaster:precompose:$precompose_version")
                 api("moe.tlaster:precompose-viewmodel:$precompose_version")
+                implementation("io.github.oshai:kotlin-logging-jvm:5.1.0")
+                implementation("org.slf4j:slf4j-api:2.0.9")
+                implementation("org.slf4j:slf4j-simple:2.0.9")
             }
         }
         val jvmTest by getting {
@@ -82,7 +85,7 @@ compose {
 sqldelight {
     databases {
         create("Database") {
-            packageName.set("satrapin.satrap")
+            packageName.set("satrapco.satrap")
             version = 1
         }
     }

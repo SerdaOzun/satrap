@@ -4,7 +4,7 @@ import app.cash.sqldelight.coroutines.asFlow
 import domain.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import satrapin.satrap.Database
+import satrapco.satrap.Database
 
 class SqlDelightServer(db: Database) : ServerDataSource {
 

@@ -8,7 +8,7 @@ import domain.SettingsDataSource
 import domain.TagDataSource
 import domain.UserDataSource
 import org.testng.annotations.BeforeClass
-import satrapin.satrap.Database
+import satrapco.satrap.Database
 
 
 open class DatabaseTestCase {
