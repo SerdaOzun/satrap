@@ -11,7 +11,15 @@ class SqlDelightUser(db: Database) : UserDataSource {
 
     override suspend fun insertUser(user: User) {
         with(user) {
-            queries.insertUser(userId, serverId!!, username, role, customUser, userLevelDescription)
+            queries.insertUser(
+                user_id = userId,
+                server_id = serverId!!,
+                username = username,
+                role = role,
+                defaultUser = defaultUser,
+                syncUser = syncUser,
+                userLevelDescription = userLevelDescription
+            )
         }
     }
 

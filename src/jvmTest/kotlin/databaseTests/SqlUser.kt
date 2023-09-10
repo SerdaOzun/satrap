@@ -36,7 +36,8 @@ class SqlUser : DatabaseTestCase() {
                     serverId,
                     username = "User with server Id",
                     role = "Admin",
-                    customUser = true,
+                    defaultUser = true,
+                    syncUser = true,
                     userLevelDescription = "All privileges"
                 )
                 userDataSource.insertUser(userWithServerId)
@@ -54,7 +55,8 @@ class SqlUser : DatabaseTestCase() {
                 it.serverId shouldBe userWithServerId.serverId
                 it.username shouldBe userWithServerId.username
                 it.role shouldBe userWithServerId.role
-                it.customUser shouldBe userWithServerId.customUser
+                it.defaultUser shouldBe userWithServerId.defaultUser
+                it.syncUser shouldBe userWithServerId.syncUser
                 it.userLevelDescription shouldBe userWithServerId.userLevelDescription
             }
         }

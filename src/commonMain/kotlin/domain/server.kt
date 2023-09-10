@@ -27,8 +27,7 @@ interface ServerDataSource {
  * @param title
  * @param organization
  * @param description
- * @param sync sync server with remote ssh repository
- * @param customServer is the server created by the user and not synced from a server
+ * @param syncServer should the server be sync with remote
  */
 data class Server(
     val serverId: Long?,
@@ -36,8 +35,7 @@ data class Server(
     var title: String,
     var organization: String?,
     var description: String,
-    var sync: Boolean,
-    var customServer: Boolean
+    var syncServer: Boolean
 )
 
 /**
@@ -55,33 +53,32 @@ fun ServerEntity.toServer() = Server(
     title,
     organization,
     description,
-    sync,
-    customServer
+    syncServer
 )
 
 fun List<GetAllData>.toServersComplete(): List<ServerComplete> {
-    val tags = this.filter { it.tag_id != null }.map { Tag(it.tag_id, it.server_id, it.tag!!, it.customTag!!) }.distinct()
+    val tags = this.filter { it.tag_id != null }.map { Tag(it.tag_id, it.server_id, it.tag!!, it.syncTag!!) }.distinct()
     val user = this.filter { it.user_id != null }.map {
         User(
-            it.user_id,
-            it.server_id,
-            it.username!!,
-            it.role!!,
-            it.customUser!!,
-            it.userLevelDescription!!
+            userId = it.user_id,
+            serverId = it.server_id,
+            username = it.username!!,
+            role = it.role!!,
+            defaultUser = it.defaultUser!!,
+            syncUser = it.syncUser!!,
+            userLevelDescription = it.userLevelDescription!!
         )
     }.distinct()
 
     return this.map {
         ServerComplete(
             Server(
-                it.server_id,
-                it.server_url,
-                it.title,
-                it.organization,
-                it.description,
-                it.sync,
-                it.customServer
+                serverId = it.server_id,
+                serverUrl = it.server_url,
+                title = it.title,
+                organization = it.organization,
+                description = it.description,
+                syncServer = it.syncServer
             ),
             tags.filter { tag -> tag.serverId == it.server_id },
             user.filter { user -> user.serverId == it.server_id }
@@ -90,28 +87,28 @@ fun List<GetAllData>.toServersComplete(): List<ServerComplete> {
 }
 
 fun List<GetServerCompleteById>.toServerComplete() : List<ServerComplete> {
-    val tags = this.filter { it.tag_id != null }.map { Tag(it.tag_id, it.server_id, it.tag!!, it.customTag!!) }.distinct()
+    val tags = this.filter { it.tag_id != null }.map { Tag(it.tag_id, it.server_id, it.tag!!, it.syncTag!!) }.distinct()
     val user = this.filter { it.user_id != null }.map {
         User(
-            it.user_id,
-            it.server_id,
-            it.username!!,
-            it.role!!,
-            it.customUser!!,
-            it.userLevelDescription!!
+            userId = it.user_id,
+            serverId = it.server_id,
+            username = it.username!!,
+            role = it.role!!,
+            defaultUser = it.defaultUser!!,
+            syncUser = it.syncUser!!,
+            userLevelDescription = it.userLevelDescription!!
         )
     }.distinct()
 
     return this.map {
         ServerComplete(
             Server(
-                it.server_id,
-                it.server_url,
-                it.title,
-                it.organization,
-                it.description,
-                it.sync,
-                it.customServer
+                serverId = it.server_id,
+                serverUrl = it.server_url,
+                title = it.title,
+                organization = it.organization,
+                description = it.description,
+                syncServer = it.syncServer
             ),
             tags.filter { tag -> tag.serverId == it.server_id },
             user.filter { user -> user.serverId == it.server_id }

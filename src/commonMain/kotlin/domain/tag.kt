@@ -18,7 +18,7 @@ data class Tag(
     val tagId: Long?,
     val serverId: Long?,
     val tag: String,
-    val customTag: Boolean
+    val syncTag: Boolean
 ) {
     override fun toString(): String {
         return tag
@@ -29,5 +29,5 @@ fun TagEntity.toTag() = Tag(
     tag_id,
     server_id,
     tag,
-    customTag
+    syncTag
 )

@@ -24,7 +24,7 @@ class ServerViewModel(
     var server by mutableStateOf(
         Server(
             serverId = null, serverUrl = "", title = "",
-            organization = "", description = "", sync = false, customServer = true
+            organization = "", description = "", syncServer = true
         )
     )
 
@@ -60,7 +60,7 @@ class ServerViewModel(
             } else {
                 server = Server(
                     serverId = null, serverUrl = "", title = "",
-                    organization = "", description = "", sync = false, customServer = true
+                    organization = "", description = "", syncServer = false
                 )
                 tags = emptyList()
                 users = emptyList()
@@ -109,7 +109,7 @@ class ServerViewModel(
 
         fun insertTag(tag: Tag? = null, tagIndex: Int) {
             if (tag == null) {
-                tags += Tag(null, server.serverId, "", true)
+                tags += Tag(null, server.serverId, "", false)
                 return
             }
 
@@ -124,7 +124,7 @@ class ServerViewModel(
 
         fun insertUser(user: User? = null, userIndex: Int) {
             if (user == null) {
-                users += User(null, server.serverId, "", "", true, "")
+                users += User(null, server.serverId, "", "", false, false, "")
                 return
             }
 
