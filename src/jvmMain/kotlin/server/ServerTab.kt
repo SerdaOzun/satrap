@@ -1,12 +1,10 @@
 package server
 
-import AppViewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import moe.tlaster.precompose.navigation.Navigator
@@ -25,12 +23,8 @@ import ui.theme.spacing
 internal fun ServerTab(
     modifier: Modifier,
     navigator: Navigator,
-    serverId: Int?,
-    serverVm: ServerViewModel = AppViewModels.serverVM
+    serverVm: ServerViewModel
 ) {
-    LaunchedEffect(true) {
-        serverVm.onEvent(ServerEvent.InitializeServer(serverId?.toLong()))
-    }
 
     Column(
         modifier = modifier.fillMaxSize()

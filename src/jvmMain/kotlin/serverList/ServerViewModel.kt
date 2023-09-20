@@ -128,6 +128,10 @@ class ServerViewModel(
                 return
             }
 
+            if (user.defaultUser) {
+                users = users.map { it.copy(defaultUser = false) }
+            }
+
             users = users.mapIndexed { index, u ->
                 if (index == userIndex) user else u
             }
