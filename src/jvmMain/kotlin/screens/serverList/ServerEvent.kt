@@ -1,4 +1,4 @@
-package serverList
+package screens.serverList
 
 import domain.Server
 import domain.Tag

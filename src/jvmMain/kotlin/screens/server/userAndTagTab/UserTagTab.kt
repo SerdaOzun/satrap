@@ -1,4 +1,4 @@
-package server.userAndTagTab
+package screens.server.userAndTagTab
 
 import AppViewModels
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -13,7 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import serverList.ServerViewModel
+import screens.serverList.ServerViewModel
 import ui.theme.spacing
 
 @Composable

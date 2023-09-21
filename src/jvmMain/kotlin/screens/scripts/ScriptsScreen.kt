@@ -1,4 +1,4 @@
-package scripts
+package screens.scripts
 
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable

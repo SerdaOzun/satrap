@@ -1,4 +1,4 @@
-package serverList
+package screens.serverList
 
 import AppDatabase
 import androidx.compose.runtime.getValue
@@ -124,14 +124,24 @@ class ServerViewModel(
 
         fun insertUser(user: User? = null, userIndex: Int) {
             if (user == null) {
-                users += User(null, server.serverId, "", "", false, false, "")
+                users += User(
+                    userId = null,
+                    serverId = server.serverId,
+                    username = "",
+                    role = "",
+                    defaultUser = users.isEmpty(),
+                    syncUser = false,
+                    userLevelDescription = ""
+                )
                 return
             }
 
+            //Set all users' default to false
             if (user.defaultUser) {
                 users = users.map { it.copy(defaultUser = false) }
             }
 
+            //Copy all users into temporary list again and only update the users which was passed to this function
             users = users.mapIndexed { index, u ->
                 if (index == userIndex) user else u
             }

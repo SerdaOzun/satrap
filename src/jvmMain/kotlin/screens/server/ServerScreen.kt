@@ -1,4 +1,4 @@
-package server
+package screens.server
 
 import AppViewModels
 import androidx.compose.foundation.layout.*
@@ -7,9 +7,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import moe.tlaster.precompose.navigation.Navigator
-import server.userAndTagTab.UserTagTab
-import serverList.ServerEvent
-import serverList.ServerViewModel
+import screens.server.userAndTagTab.UserTagTab
+import screens.serverList.ServerViewModel
 import ui.theme.spacing
 
 /**
@@ -21,10 +20,6 @@ fun ServerScreen(
     serverId: Int?,
     serverVm: ServerViewModel = AppViewModels.serverVM
 ) {
-    if (serverId != null && serverId.toLong() != serverVm.server.serverId) {
-        serverVm.onEvent(ServerEvent.InitializeServer(serverId.toLong()))
-    }
-
     Column(modifier = Modifier.padding(MaterialTheme.spacing.large)) {
         Text(
             "Server",

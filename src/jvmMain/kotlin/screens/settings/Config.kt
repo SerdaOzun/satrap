@@ -1,4 +1,4 @@
-package settings
+package screens.settings
 
 import AppDatabase
 import androidx.compose.runtime.getValue

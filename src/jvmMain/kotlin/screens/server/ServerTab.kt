@@ -1,4 +1,4 @@
-package server
+package screens.server
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -9,8 +9,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import moe.tlaster.precompose.navigation.Navigator
 import navigation.Screen
-import serverList.ServerEvent
-import serverList.ServerViewModel
+import screens.serverList.ServerEvent
+import screens.serverList.ServerViewModel
 import ui.components.CarbonTextButton
 import ui.components.CarbonTextfield
 import ui.components.carbonTheme
@@ -42,11 +42,10 @@ internal fun ServerTab(
         ) {
             //Textfields
             LabelAndField(
-                Modifier.fillMaxWidth(),
-                "URL",
-                serverVm.server.serverUrl,
-                errorHandling = true,
-                isError = { serverVm.serverInvalid = it }
+                modifier = Modifier.fillMaxWidth(),
+                label = "URL",
+                value = serverVm.server.serverUrl,
+                errorHandling = true
             ) {
                 serverVm.server = serverVm.server.copy(serverUrl = it)
             }
@@ -141,7 +140,9 @@ private fun SaveAndCancelButton(modifier: Modifier, serverVm: ServerViewModel, n
     ) {
         CarbonTextButton(
             onClick = {
-                serverVm.serverInvalid = serverVm.users.isEmpty() || serverVm.users.firstOrNull()?.username!!.isEmpty()
+                serverVm.serverInvalid =
+                    serverVm.users.isEmpty() || serverVm.users.firstOrNull()?.username!!.isEmpty() ||
+                            serverVm.server.serverUrl.isEmpty()
                 if (!serverVm.serverInvalid) {
                     val title = serverVm.server.title.ifEmpty { serverVm.server.serverUrl }
                     serverVm.onEvent(ServerEvent.InsertServer(serverVm.server.copy(title = title)))

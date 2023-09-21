@@ -1,7 +1,6 @@
-package environmentVars
+package screens.environmentVars
 
 import AppViewModels
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -20,8 +19,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import moe.tlaster.precompose.navigation.Navigator
-import serverList.TableCell
-import serverList.TableImgButton
+import screens.serverList.TableCell
+import screens.serverList.TableImgButton
 import ui.theme.spacing
 
 /**

@@ -16,7 +16,7 @@ import moe.tlaster.precompose.PreComposeWindow
 import moe.tlaster.precompose.navigation.rememberNavigator
 import navigation.NavigationBar
 import navigation.SatrapNavHost
-import settings.Config
+import screens.settings.Config
 import ui.theme.AppTheme
 import ui.theme.IbmCarbonTheme
 import ui.theme.spacing

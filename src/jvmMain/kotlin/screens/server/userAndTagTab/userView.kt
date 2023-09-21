@@ -1,4 +1,4 @@
-package server.userAndTagTab
+package screens.server.userAndTagTab
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -8,8 +8,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -17,8 +15,8 @@ import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import domain.User
-import serverList.ServerEvent
-import serverList.ServerViewModel
+import screens.serverList.ServerEvent
+import screens.serverList.ServerViewModel
 import ui.components.CarbonTextButton
 import ui.components.CarbonTextfield
 import ui.components.carbonTheme
@@ -30,17 +28,9 @@ fun UserCreationList(serverVM: ServerViewModel) {
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val defaultUserRadioOptions = serverVM.users
-        val (defaultUserSelected, onDefaultUserSelected) = remember {
-            mutableStateOf(defaultUserRadioOptions[
-                defaultUserRadioOptions.indexOfFirst { it.defaultUser }
-                    .takeIf { it >= 0 } ?: 0
-            ])
-        }
-
         LazyColumn(modifier = Modifier.fillMaxSize().weight(0.85f)) {
             itemsIndexed(serverVM.users) { index, user ->
-                userItem(index, user, serverVM, defaultUserSelected, onDefaultUserSelected)
+                userItem(index, user, serverVM)
             }
         }
         Row(
@@ -63,9 +53,7 @@ fun UserCreationList(serverVM: ServerViewModel) {
 private fun userItem(
     userIndex: Int,
     user: User,
-    serverVM: ServerViewModel,
-    defaultUserSelected: User,
-    onDefaultUserSelected: (User) -> Unit
+    serverVM: ServerViewModel
 ) {
 
     Column(
@@ -86,9 +74,9 @@ private fun userItem(
                 label = "",
                 value = user.username.trimEnd(),
                 onValueChange = { serverVM.onEvent(ServerEvent.InsertUser(user.copy(username = it), userIndex)) },
-                //Neuen User erstellen bei Klick auf 'Enter'
-                modifier = Modifier.weight(0.7f).onKeyEvent {
-                    if (it.key == Key.Enter) {
+                //Create new user with click on 'Enter'
+                modifier = Modifier.weight(0.7f).onKeyEvent { event ->
+                    if (event.key == Key.Enter) {
                         if (serverVM.users.none { it.username.isEmpty() }) {
                             serverVM.onEvent(ServerEvent.InsertUser(null, serverVM.users.size))
                         }
@@ -121,9 +109,8 @@ private fun userItem(
             ).fillMaxWidth()
         ) {
             RadioButton(
-                selected = user == defaultUserSelected,
+                selected = user.defaultUser,
                 onClick = {
-                    onDefaultUserSelected(user)
                     serverVM.onEvent(ServerEvent.InsertUser(user.copy(defaultUser = true), userIndex))
                 }
 

@@ -1,7 +1,7 @@
 package util
 
 import config
-import settings.Terminal
+import screens.settings.Terminal
 import java.io.File
 
 
