@@ -37,9 +37,8 @@ class SqlServer : DatabaseTestCase() {
                 serverUrl shouldBe server.serverUrl
                 title shouldBe server.title
                 organization shouldBe server.organization
-                sync shouldBe server.sync
                 description shouldBe server.description
-                customServer shouldBe server.customServer
+                syncServer shouldBe server.syncServer
             }
         }
     }

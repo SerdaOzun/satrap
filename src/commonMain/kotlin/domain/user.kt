@@ -19,7 +19,8 @@ data class User(
     val serverId: Long?,
     val username: String,
     val role: String,
-    val customUser: Boolean,
+    val defaultUser: Boolean,
+    val syncUser: Boolean,
     val userLevelDescription: String
 ) {
     override fun toString(): String {
@@ -32,6 +33,7 @@ fun UserEntity.toUser() = User(
     server_id,
     username,
     role,
-    customUser,
+    defaultUser,
+    syncUser,
     userLevelDescription
 )

@@ -1,4 +1,4 @@
-package serverList
+package screens.serverList
 
 import AppViewModels
 import androidx.compose.foundation.layout.Arrangement

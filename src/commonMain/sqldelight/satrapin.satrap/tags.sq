@@ -4,13 +4,13 @@ CREATE TABLE IF NOT EXISTS tagEntity (
   tag_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   server_id INTEGER NOT NULL,
   tag TEXT NOT NULL,
-  customTag INTEGER AS Boolean NOT NULL DEFAULT 0, -- self created Tag not from sync
+  syncTag INTEGER AS Boolean NOT NULL DEFAULT 0, -- sync with remote
   FOREIGN KEY (server_id) REFERENCES serverEntity(server_id) ON DELETE CASCADE
 );
 
 insertTag:
 INSERT OR REPLACE
-INTO tagEntity(tag_id, server_id, tag, customTag)
+INTO tagEntity(tag_id, server_id, tag, syncTag)
 VALUES (?, ?, ?, ?);
 
 getTagById:

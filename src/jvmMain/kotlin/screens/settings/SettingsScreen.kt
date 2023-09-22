@@ -1,4 +1,4 @@
-package settings
+package screens.settings
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme

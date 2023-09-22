@@ -1,4 +1,4 @@
-package serverList
+package screens.serverList
 
 import AppViewModels
 import androidx.compose.desktop.ui.tooling.preview.Preview
@@ -69,7 +69,7 @@ fun ServerGrid(
                             .sortedWith(getServerCompleteComparator(serverVM.serverNameSortingAscending)),
                         key = { s -> s.server.serverId!! }
                     ) {
-                        tableContent(it, selectedId) {
+                        serverItem(it, selectedId) {
                             selectedId = it
                         }
                     }
@@ -100,13 +100,19 @@ fun ButtonPanel(
 ) {
     Row(modifier) {
         CarbonTextButton(modifier = Modifier.padding(end = MaterialTheme.spacing.small).carbonTheme(),
-            onClick = { navigator.navigate(Screen.ServerScreen.name) }) {
+            onClick = {
+                serverVM.onEvent(ServerEvent.InitializeServer(null))
+                navigator.navigate(Screen.ServerScreen.name)
+            }) {
             Text("New", color = MaterialTheme.colors.onPrimary, modifier = it)
         }
         CarbonTextButton(
             modifier = Modifier.padding(end = MaterialTheme.spacing.small)
                 .carbonTheme(isEnabled = selectedServer != null),
-            onClick = { navigator.navigate("${Screen.ServerScreen.name}/${selectedServer?.server?.serverId}") },
+            onClick = {
+                serverVM.onEvent(ServerEvent.InitializeServer(selectedServer!!.server.serverId))
+                navigator.navigate(Screen.ServerScreen.name)
+            },
             enabled = selectedServer != null
         ) {
             Text("Edit", color = MaterialTheme.colors.onPrimary, modifier = it)
@@ -125,7 +131,7 @@ fun ButtonPanel(
 @Composable
 private fun Headers(modifier: Modifier, serverVM: ServerViewModel) {
     Row(modifier.background(Color.Gray), verticalAlignment = Alignment.CenterVertically) {
-        ServerHeader.values().forEach { currentHeader ->
+        ServerHeader.entries.forEach { currentHeader ->
             if (currentHeader != ServerHeader.SERVER) {
                 TableCell(text = currentHeader.label, modifier = Modifier.weight(currentHeader.weight))
             } else {
@@ -141,12 +147,12 @@ private fun Headers(modifier: Modifier, serverVM: ServerViewModel) {
 }
 
 @Composable
-private fun tableContent(
+private fun serverItem(
     serverComplete: ServerComplete,
     selectedId: Long,
     onSelect: (Long) -> Unit
 ) {
-    var selectedUser by remember { mutableStateOf(serverComplete.users.first()) }
+    var selectedUser by remember { mutableStateOf(serverComplete.users.first { it.defaultUser }) }
     Row(
         modifier = Modifier.selectable(selected = serverComplete.server.serverId == selectedId,
             onClick = {
@@ -194,7 +200,7 @@ fun RowScope.TableCellWithIcon(text: String, ascending: Boolean, modifier: Modif
 
 @Composable
 fun RowScope.TableIconButton(
-    icon: ImageVector = Icons.Filled.PlayArrow, modifier: Modifier,  onClick: () -> Unit
+    icon: ImageVector = Icons.Filled.PlayArrow, modifier: Modifier, onClick: () -> Unit
 ) {
     IconButton(onClick = onClick, modifier = modifier) {
         Icon(icon, "", tint = MaterialTheme.colors.secondaryVariant)

@@ -23,8 +23,7 @@ class SqlServerComplete : DatabaseTestCase() {
                 title = "title$it",
                 organization = "org$it",
                 description = "desc$it",
-                sync = it % 2 == 0,
-                customServer = it % 2 == 0
+                syncServer = it % 2 == 0
             )
         }
         runBlocking {
@@ -35,18 +34,19 @@ class SqlServerComplete : DatabaseTestCase() {
             serverDataSource.getAllServer().first().forEachIndexed { index, server ->
                 (0..index).map {
                     tagDataSource.insertTag(
-                        Tag(null, server.serverId!!, tag = "tag$it", customTag = it % 2 == 0)
+                        Tag(null, server.serverId!!, tag = "tag$it", syncTag = it % 2 == 0)
                     )
                 }
                 (0..index).map {
                     userDataSource.insertUser(
                         User(
-                            null,
-                            server.serverId!!,
-                            "username$it",
-                            "role$it",
-                            it % 2 == 0,
-                            "desc$it"
+                            userId = null,
+                            serverId = server.serverId!!,
+                            username = "username$it",
+                            role = "role$it",
+                            defaultUser = it % 2 == 0,
+                            syncUser = false,
+                            userLevelDescription = "desc$it"
                         )
 
                     )

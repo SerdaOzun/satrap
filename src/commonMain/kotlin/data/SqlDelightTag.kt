@@ -10,7 +10,7 @@ class SqlDelightTag(db: Database) : TagDataSource {
     private val queries = db.tagsQueries
     override suspend fun insertTag(tag: Tag) {
         tag.let {
-            queries.insertTag(it.tagId, it.serverId!!, it.tag, it.customTag)
+            queries.insertTag(it.tagId, it.serverId!!, it.tag, it.syncTag)
         }
     }
 

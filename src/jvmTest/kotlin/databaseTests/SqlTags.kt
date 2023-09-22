@@ -35,7 +35,7 @@ class SqlTags : DatabaseTestCase() {
                     tagId = null,
                     serverId = serverId,
                     tag = "Tag with serverId",
-                    customTag = true
+                    syncTag = true
                 )
                 tagDataSource.insertTag(tagWithServerId)
                 tagDataSource.getAllTag().size shouldBe 1
@@ -51,7 +51,7 @@ class SqlTags : DatabaseTestCase() {
             tagDataSource.getAllTag().single().let {
                 it.serverId shouldBe tagWithServerId.serverId
                 it.tag shouldBe tagWithServerId.tag
-                it.customTag shouldBe tagWithServerId.customTag
+                it.syncTag shouldBe tagWithServerId.syncTag
             }
         }
     }

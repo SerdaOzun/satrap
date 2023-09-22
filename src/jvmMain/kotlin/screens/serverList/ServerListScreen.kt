@@ -1,4 +1,4 @@
-package serverList
+package screens.serverList
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize

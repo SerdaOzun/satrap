@@ -1,4 +1,4 @@
-package server.userAndTagTab
+package screens.server.userAndTagTab
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,8 +18,8 @@ import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import domain.Tag
-import serverList.ServerEvent
-import serverList.ServerViewModel
+import screens.serverList.ServerEvent
+import screens.serverList.ServerViewModel
 import ui.components.CarbonTextButton
 import ui.components.CarbonTextfield
 import ui.components.carbonTheme

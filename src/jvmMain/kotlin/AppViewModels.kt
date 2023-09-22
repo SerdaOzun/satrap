@@ -1,6 +1,6 @@
-import environmentVars.EnvVarsViewModel
 import kotlinx.coroutines.Dispatchers
-import serverList.ServerViewModel
+import screens.environmentVars.EnvVarsViewModel
+import screens.serverList.ServerViewModel
 
 object AppViewModels {
     private val ioDispatcher = Dispatchers.IO

@@ -44,7 +44,7 @@ fun NavigationBar(modifier: Modifier, navigator: Navigator) {
 
         //Settings has its special Index -1, as it should not have a "selected" Attribute
         Row(
-            modifier = Modifier.fillMaxWidth()//.onClick { navigator.navigate(Screen.SettingsScreen.name) }
+            modifier = Modifier.fillMaxWidth()
                 .background(if (selectedIndex == -1) MaterialTheme.colors.onSurface else Color.Transparent)
                 .selectable(selected = selectedIndex == -1, onClick = {
                     navigator.navigate(Screen.SettingsScreen.name)

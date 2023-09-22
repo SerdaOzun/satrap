@@ -5,15 +5,16 @@ CREATE TABLE IF NOT EXISTS userEntity (
   server_id INTEGER NOT NULL,
   username TEXT NOT NULL,
   role TEXT NOT NULL, -- Admin, Read-Only etc.
-  customUser INTEGER AS Boolean NOT NULL DEFAULT 0, -- self created User
+  defaultUser INTEGER AS Boolean NOT NULL DEFAULT 0, -- Default user selected in serverlist combobox
+  syncUser INTEGER AS Boolean NOT NULL DEFAULT 0, -- sync with remote.
   userLevelDescription TEXT NOT NULL, -- default inherits description from server.sq
   FOREIGN KEY (server_id) REFERENCES serverEntity(server_id) ON DELETE CASCADE
 );
 
 insertUser:
 INSERT OR REPLACE
-INTO userEntity(user_id, server_id, username, role, customUser, userLevelDescription)
-VALUES (?, ?, ?, ?, ?, ?);
+INTO userEntity(user_id, server_id, username, role, defaultUser, syncUser, userLevelDescription)
+VALUES (?, ?, ?, ?, ?, ?, ?);
 
 getUserById:
 SELECT *

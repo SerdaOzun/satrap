@@ -1,4 +1,4 @@
-package environmentVars
+package screens.environmentVars
 
 import androidx.compose.runtime.mutableStateOf
 import moe.tlaster.precompose.viewmodel.ViewModel

@@ -1,12 +1,14 @@
-package server
+package screens.server
 
+import AppViewModels
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import moe.tlaster.precompose.navigation.Navigator
-import server.userAndTagTab.UserTagTab
+import screens.server.userAndTagTab.UserTagTab
+import screens.serverList.ServerViewModel
 import ui.theme.spacing
 
 /**
@@ -15,9 +17,8 @@ import ui.theme.spacing
 @Composable
 fun ServerScreen(
     navigator: Navigator,
-    serverId: Int?
+    serverVm: ServerViewModel = AppViewModels.serverVM
 ) {
-
     Column(modifier = Modifier.padding(MaterialTheme.spacing.large)) {
         Text(
             "Server",
@@ -26,7 +27,7 @@ fun ServerScreen(
             modifier = Modifier.padding(bottom = MaterialTheme.spacing.medium)
         )
         Row {
-            ServerTab(modifier = Modifier.weight(0.5f), navigator, serverId)
+            ServerTab(modifier = Modifier.weight(0.5f), navigator, serverVm)
             Spacer(modifier = Modifier.weight(0.02f).fillMaxSize())
             UserTagTab(modifier = Modifier.weight(0.5f))
         }

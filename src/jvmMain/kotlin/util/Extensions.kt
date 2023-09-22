@@ -1,7 +1,7 @@
 package util
 
 import domain.ServerComplete
-import serverList.ServerViewModel
+import screens.serverList.ServerViewModel
 
 /**
  * Only display servers according to the filters chosen
