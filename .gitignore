@@ -46,3 +46,4 @@ bin/
 
 ### Other ###
 *.db
+/satrap_log.log

@@ -111,7 +111,7 @@ fun ButtonPanel(
                 .carbonTheme(isEnabled = selectedServer != null),
             onClick = {
                 serverVM.onEvent(ServerEvent.InitializeServer(selectedServer!!.server.serverId))
-                navigator.navigate("${Screen.ServerScreen.name}/${selectedServer.server.serverId}")
+                navigator.navigate(Screen.ServerScreen.name)
             },
             enabled = selectedServer != null
         ) {

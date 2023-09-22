@@ -17,7 +17,6 @@ import ui.theme.spacing
 @Composable
 fun ServerScreen(
     navigator: Navigator,
-    serverId: Int?,
     serverVm: ServerViewModel = AppViewModels.serverVM
 ) {
     Column(modifier = Modifier.padding(MaterialTheme.spacing.large)) {
