@@ -22,7 +22,7 @@ fun SatrapNavHost(navigator: Navigator) {
         scene(Screen.ServerListScreen.name) {
             ServerListScreen(navigator)
         }
-        scene("${Screen.ServerScreen.name}") {
+        scene(Screen.ServerScreen.name) {
             ServerScreen(navigator)
         }
         scene(Screen.EnvVarsScreen.name) {

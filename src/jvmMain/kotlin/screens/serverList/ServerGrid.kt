@@ -131,7 +131,7 @@ fun ButtonPanel(
 @Composable
 private fun Headers(modifier: Modifier, serverVM: ServerViewModel) {
     Row(modifier.background(Color.Gray), verticalAlignment = Alignment.CenterVertically) {
-        ServerHeader.values().forEach { currentHeader ->
+        ServerHeader.entries.forEach { currentHeader ->
             if (currentHeader != ServerHeader.SERVER) {
                 TableCell(text = currentHeader.label, modifier = Modifier.weight(currentHeader.weight))
             } else {
