@@ -39,6 +39,7 @@ class SqlServer : DatabaseTestCase() {
                 organization shouldBe server.organization
                 description shouldBe server.description
                 syncServer shouldBe server.syncServer
+                defaultUserId shouldBe 1L
             }
         }
     }

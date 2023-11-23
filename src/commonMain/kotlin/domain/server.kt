@@ -35,7 +35,8 @@ data class Server(
     var title: String,
     var organization: String?,
     var description: String,
-    var syncServer: Boolean
+    var syncServer: Boolean,
+    var defaultUserId: Long?
 )
 
 /**
@@ -53,15 +54,25 @@ fun ServerEntity.toServer() = Server(
     title,
     organization,
     description,
-    syncServer
+    syncServer,
+    defaultUserId
 )
 
 fun List<GetAllData>.toServersComplete(): List<ServerComplete> {
-    val tags = this.filter { it.tag_id != null }.map { Tag(it.tag_id, it.server_id, it.tag!!, it.syncTag!!) }.distinct()
+    val tagServerMap = this.groupBy { it.tag_id }.mapValues { (_, group) -> group.map { it.server_id } }
+    val tags = this.filter { it.tag_id != null }.map {
+        Tag(
+            tagId = it.tag_id,
+            serverIds = tagServerMap[it.tag_id],
+            tag = it.tag!!,
+            syncTag = it.syncTag!!
+        )
+    }.distinct()
+    val userServersMap = this.groupBy { it.user_id }.mapValues { (_, group) -> group.map { it.server_id } }
     val user = this.filter { it.user_id != null }.map {
         User(
             userId = it.user_id,
-            serverId = it.server_id,
+            serverIds = userServersMap[it.user_id],
             username = it.username!!,
             role = it.role!!,
             defaultUser = it.defaultUser!!,
@@ -78,20 +89,30 @@ fun List<GetAllData>.toServersComplete(): List<ServerComplete> {
                 title = it.title,
                 organization = it.organization,
                 description = it.description,
-                syncServer = it.syncServer
+                syncServer = it.syncServer,
+                defaultUserId = it.defaultUserId
             ),
-            tags.filter { tag -> tag.serverId == it.server_id },
-            user.filter { user -> user.serverId == it.server_id }
+            tags.filter { tag -> tag.serverIds!!.contains(it.server_id) },
+            user.filter { user -> user.serverIds!!.contains(it.server_id) }
         )
     }
 }
 
-fun List<GetServerCompleteById>.toServerComplete() : List<ServerComplete> {
-    val tags = this.filter { it.tag_id != null }.map { Tag(it.tag_id, it.server_id, it.tag!!, it.syncTag!!) }.distinct()
+fun List<GetServerCompleteById>.toServerComplete(): List<ServerComplete> {
+    val tagServerMap = this.groupBy { it.tag_id }.mapValues { (_, group) -> group.map { it.server_id } }
+    val tags = this.filter { it.tag_id != null }.map {
+        Tag(
+            tagId = it.tag_id,
+            serverIds = tagServerMap[it.tag_id],
+            tag = it.tag!!,
+            syncTag = it.syncTag!!
+        )
+    }.distinct()
+    val userServersMap = this.groupBy { it.user_id }.mapValues { (_, group) -> group.map { it.server_id } }
     val user = this.filter { it.user_id != null }.map {
         User(
             userId = it.user_id,
-            serverId = it.server_id,
+            serverIds = userServersMap[it.user_id],
             username = it.username!!,
             role = it.role!!,
             defaultUser = it.defaultUser!!,
@@ -108,10 +129,11 @@ fun List<GetServerCompleteById>.toServerComplete() : List<ServerComplete> {
                 title = it.title,
                 organization = it.organization,
                 description = it.description,
-                syncServer = it.syncServer
+                syncServer = it.syncServer,
+                defaultUserId = it.defaultUserId
             ),
-            tags.filter { tag -> tag.serverId == it.server_id },
-            user.filter { user -> user.serverId == it.server_id }
+            tags.filter { tag -> tag.serverIds!!.contains(it.server_id) },
+            user.filter { user -> user.serverIds!!.contains(it.server_id) }
         )
     }
 }

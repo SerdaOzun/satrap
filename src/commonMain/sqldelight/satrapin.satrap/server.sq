@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS serverEntity (
   title TEXT NOT NULL,
   organization Text,
   description TEXT NOT NULL,
-  syncServer INTEGER AS Boolean NOT NULL DEFAULT 0 -- sync with remote
+  syncServer INTEGER AS Boolean NOT NULL DEFAULT 0, -- sync with remote
+  defaultUserId INTEGER
 );
 
 getLastInsertedId:
@@ -14,8 +15,8 @@ SELECT last_insert_rowid();
 
 insertServer:
 INSERT OR REPLACE
-INTO serverEntity(server_id, server_url, title, organization, description, syncServer)
-VALUES (?, ?, ?, ?, ?,?);
+INTO serverEntity(server_id, server_url, title, organization, description, syncServer, defaultUserId)
+VALUES (?, ?, ?, ?, ?,?, ?);
 
 getAllServers:
 SELECT *
@@ -31,14 +32,18 @@ DELETE FROM serverEntity
 WHERE server_id = :id;
 
 getAllData:
-SELECT server.*, tag.tag_id, tag.tag, tag.syncTag, user.user_id, user.username, user.userLevelDescription, user.defaultUser, user.role, user.syncUser
+SELECT server.*, tag.*, user.*
 FROM serverEntity AS server
-LEFT JOIN tagEntity AS tag ON server.server_id = tag.server_id
-LEFT JOIN userEntity AS user ON server.server_id = user.server_id;
+LEFT JOIN TagServer AS tagserver ON server.server_id = tagserver.server_id
+LEFT JOIN tagEntity AS tag ON tagserver.tag_id = tag.tag_id
+LEFT JOIN UserServer AS userserver ON server.server_id = userserver.server_id
+LEFT JOIN userEntity AS user ON userserver.user_id = user.user_id;
 
 getServerCompleteById:
-SELECT server.*, tag.tag_id, tag.tag, tag.syncTag, user.user_id, user.username, user.userLevelDescription, user.defaultUser, user.role, user.syncUser
+SELECT server.*, tag.*, user.*
 FROM serverEntity AS server
-LEFT JOIN tagEntity AS tag ON server.server_id = tag.server_id
-LEFT JOIN userEntity AS user ON server.server_id = user.server_id
+LEFT JOIN TagServer AS tagserver ON server.server_id = tagserver.server_id
+LEFT JOIN tagEntity AS tag ON tagserver.tag_id = tag.tag_id
+LEFT JOIN UserServer AS userserver ON server.server_id = userserver.server_id
+LEFT JOIN userEntity AS user ON userserver.user_id = user.user_id
 WHERE server.server_id = :serverId;

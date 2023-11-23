@@ -1,10 +1,11 @@
-import kotlinx.coroutines.Dispatchers
 import screens.environmentVars.EnvVarsViewModel
 import screens.serverList.ServerViewModel
+import screens.tagManagement.TagViewModel
+import screens.userManagement.UserViewModel
 
 object AppViewModels {
-    private val ioDispatcher = Dispatchers.IO
-
     val serverVM = ServerViewModel()
+    val userVm = UserViewModel()
+    val tagVm = TagViewModel()
     val envVarVm = EnvVarsViewModel()
 }

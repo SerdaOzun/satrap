@@ -1,33 +1,31 @@
 package domain
 
-import satrapinsatrap.TagEntity
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Write and retrieve Tags which allow Users to organize their servers
  * @see Tag
  */
 interface TagDataSource {
-    suspend fun insertTag(tag: Tag)
+    suspend fun insertTag(tag: Tag): Long?
     suspend fun getTagById(id: Long): Tag?
-    suspend fun getAllTag(): List<Tag>
+    fun getAllTags(): Flow<List<Tag>>
     suspend fun getTagsByServerId(serverId: Long): List<Tag>
+    suspend fun addTagToServer(tagId: Long, serverId: Long)
+    suspend fun removeTagFromServer(tagId: Long, serverId: Long)
     suspend fun deleteTagById(id: Long)
+    suspend fun getLastInsertedId(): Long?
 }
 
 data class Tag(
     val tagId: Long?,
-    val serverId: Long?,
+    val serverIds: List<Long>?,
     val tag: String,
     val syncTag: Boolean
 ) {
     override fun toString(): String {
         return tag
     }
-}
 
-fun TagEntity.toTag() = Tag(
-    tag_id,
-    server_id,
-    tag,
-    syncTag
-)
+    constructor(tag: String): this(null, emptyList(), tag, false)
+}

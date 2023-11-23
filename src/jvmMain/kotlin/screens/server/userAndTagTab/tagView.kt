@@ -1,53 +1,102 @@
 package screens.server.userAndTagTab
 
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import domain.Tag
-import screens.serverList.ServerEvent
-import screens.serverList.ServerViewModel
-import ui.components.CarbonTextButton
-import ui.components.CarbonTextfield
-import ui.components.carbonTheme
+import screens.tagManagement.TagEvent
+import screens.tagManagement.TagViewModel
+import ui.components.ColorRow
+import ui.components.TerminalTextButton
+import ui.components.TerminalTextField
+import ui.components.terminalTheme
+import ui.theme.LightGreen
 import ui.theme.spacing
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TagTextfieldList(
-    serverVM: ServerViewModel
+    tagVM: TagViewModel
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        LazyColumn(modifier = Modifier.fillMaxSize().weight(0.85f)) {
-            itemsIndexed(serverVM.tags) { index, tag ->
-                tagItem(index, tag, serverVM)
+
+        val allTags by tagVM.allTags.collectAsState(emptyList())
+
+        Row(Modifier.weight(0.85f)) {
+            val state = rememberLazyListState()
+            LazyColumn(modifier = Modifier.fillMaxSize().weight(0.85f), state) {
+                items(allTags) { tag ->
+                    tagItem(tag, tagVM)
+                }
             }
+            VerticalScrollbar(
+                modifier = Modifier.fillMaxHeight().width(10.dp),
+                adapter = rememberScrollbarAdapter(
+                    scrollState = state
+                ),
+                style = LocalScrollbarStyle.current.copy(
+                    unhoverColor = MaterialTheme.colors.onPrimary,
+                    hoverColor = MaterialTheme.colors.onPrimary
+                )
+            )
         }
+
+        Divider(thickness = 3.dp, color = MaterialTheme.colors.onBackground)
+
+
+
         Row(
             horizontalArrangement = Arrangement.Start,
-            modifier = Modifier.fillMaxWidth().weight(0.15f, false).padding(MaterialTheme.spacing.medium)
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min)
+                .padding(MaterialTheme.spacing.medium)
         ) {
-            CarbonTextButton(modifier = Modifier.carbonTheme(), onClick = {
-                if (serverVM.tags.none { it.tag.isEmpty() }) {
-                    serverVM.onEvent(ServerEvent.InsertTag(null, serverVM.tags.size))
+            var newTagname by remember { mutableStateOf("") }
+
+            TerminalTextField(
+                label = "New Tag...",
+                value = newTagname,
+                onValueChange = { newTagname = it },
+                modifier = Modifier.weight(0.7f).fillMaxSize().padding(end = MaterialTheme.spacing.extraSmall)
+                    .border(width = 1.dp, color = MaterialTheme.colors.onPrimary)
+                    .onKeyEvent { event ->
+                        if (event.key == Key.Enter) {
+                            if (newTagname.isNotEmpty()) {
+                                tagVM.onEvent(
+                                    TagEvent.InsertTag(Tag(null, null, newTagname, syncTag = true))
+                                )
+                                newTagname = ""
+                            }
+                            true
+                        } else false
+                    }
+            )
+
+            TerminalTextButton(modifier = Modifier.weight(0.3f).terminalTheme().fillMaxSize(), onClick = {
+                if (newTagname.isNotEmpty()) {
+                    tagVM.onEvent(TagEvent.InsertTag(Tag(null, null, newTagname, syncTag = true)))
+                    newTagname = ""
                 }
             }) {
-                Text("Add Tags", color = MaterialTheme.colors.onPrimary, modifier = it)
+                Text("Create Tag", color = MaterialTheme.colors.onPrimary, modifier = it)
             }
         }
     }
@@ -56,45 +105,56 @@ fun TagTextfieldList(
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-private fun tagItem(tagIndex: Int, tag: Tag, serverVM: ServerViewModel) {
+private fun tagItem(tag: Tag, tagVM: TagViewModel) {
+    val tagIsSelected = tag.tagId in tagVM.selectedTags.map { it.tagId }
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(
-            top = MaterialTheme.spacing.large,
-            start = MaterialTheme.spacing.large,
-            end = MaterialTheme.spacing.large
-        ).fillMaxWidth(),
+            top = MaterialTheme.spacing.small,
+            start = MaterialTheme.spacing.small,
+            end = MaterialTheme.spacing.small
+        ).fillMaxWidth().height(IntrinsicSize.Min),
         horizontalArrangement = Arrangement.Center
     ) {
-        Text("${tagIndex + 1}.", modifier = Modifier.weight(0.05f))
-        CarbonTextfield(
-            label = "",
-            value = tag.tag.trimEnd(),
-            onValueChange = { serverVM.onEvent(ServerEvent.InsertTag(tag.copy(tag = it), tagIndex)) },
-            //Neuen Tag erstellen bei Klick auf 'Enter'
-            modifier = Modifier.weight(0.7f).onKeyEvent {
-                if (it.key == Key.Enter) {
-                    if (serverVM.tags.none { it.tag.isEmpty() }) {
-                        serverVM.onEvent(ServerEvent.InsertTag(null, serverVM.tags.size))
-                    }
-                    true
-                } else false
-            }
-        )
-
-        IconButton(
-            modifier = Modifier.weight(0.1f).padding(start = MaterialTheme.spacing.small),
-            onClick = {
-                if (serverVM.tags.none { it.tag.isEmpty() }) {
-                    serverVM.onEvent(ServerEvent.InsertTag(null, serverVM.tags.size))
+        //Selection
+        ColorRow(
+            modifier = Modifier.weight(0.10f).fillMaxSize()
+                .clickable {
+                    tagVM.onEvent(
+                        if (!tagIsSelected) TagEvent.SelectTag(tag) else TagEvent.UnselectTag(tag)
+                    )
                 }
-            }) {
-            Icon(Icons.Filled.Add, "Add")
+                .background(if (tagIsSelected) MaterialTheme.colors.LightGreen else MaterialTheme.colors.background),
+            horizontal = Arrangement.Center,
+            withBorder = true
+        ) {
         }
-        IconButton(
-            modifier = Modifier.weight(0.1f).padding(start = MaterialTheme.spacing.extraSmall),
-            onClick = { serverVM.onEvent(ServerEvent.DeleteTag(tagIndex)) }) {
-            Icon(Icons.Filled.Delete, "Delete")
+
+        //Tag + Selection on click
+        Row(
+            modifier = Modifier.weight(0.90f).fillMaxSize()
+                .selectable(
+                    selected = tagIsSelected,
+                    onClick = {
+                        tagVM.onEvent(
+                            if (!tagIsSelected) TagEvent.SelectTag(tag) else TagEvent.UnselectTag(tag)
+                        )
+                    }
+                )
+                .background(MaterialTheme.colors.onBackground),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = tag.tag.trimEnd(),
+                modifier = Modifier.padding(
+                    start = MaterialTheme.spacing.extraSmall,
+                    top = MaterialTheme.spacing.medium,
+                    bottom = MaterialTheme.spacing.medium
+                ),
+                color = MaterialTheme.colors.background,
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }

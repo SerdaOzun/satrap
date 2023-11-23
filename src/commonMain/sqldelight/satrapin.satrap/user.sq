@@ -2,33 +2,39 @@ import kotlin.Boolean;
 
 CREATE TABLE IF NOT EXISTS userEntity (
   user_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-  server_id INTEGER NOT NULL,
   username TEXT NOT NULL,
   role TEXT NOT NULL, -- Admin, Read-Only etc.
   defaultUser INTEGER AS Boolean NOT NULL DEFAULT 0, -- Default user selected in serverlist combobox
   syncUser INTEGER AS Boolean NOT NULL DEFAULT 0, -- sync with remote.
-  userLevelDescription TEXT NOT NULL, -- default inherits description from server.sq
-  FOREIGN KEY (server_id) REFERENCES serverEntity(server_id) ON DELETE CASCADE
+  userLevelDescription TEXT NOT NULL -- default inherits description from server.sq
 );
+
+getLastInsertedId:
+SELECT last_insert_rowid();
 
 insertUser:
 INSERT OR REPLACE
-INTO userEntity(user_id, server_id, username, role, defaultUser, syncUser, userLevelDescription)
-VALUES (?, ?, ?, ?, ?, ?, ?);
+INTO userEntity(user_id, username, role, defaultUser, syncUser, userLevelDescription)
+VALUES (?, ?, ?, ?, ?, ?);
 
 getUserById:
-SELECT *
-FROM userEntity
-WHERE user_id = :userId;
+SELECT user.*, userserver.server_id
+FROM userEntity AS user
+JOIN UserServer AS userserver ON user.user_id = userserver.user_id
+WHERE user.user_id = :userId;
 
 getAllUser:
-SELECT *
-FROM userEntity;
+SELECT user.*, userserver.server_id
+FROM userEntity AS user
+LEFT JOIN UserServer AS userserver ON user.user_id = userserver.user_id
+ORDER BY user.username;
 
 getUsersByServerId:
-SELECT *
-FROM userEntity
-WHERE server_id = ?;
+SELECT user.*, userserver.server_id
+FROM userEntity AS user
+LEFT JOIN UserServer AS userserver ON user.user_id = userserver.user_id
+WHERE server_id = ?
+ORDER BY user.username;
 
 deleteUserById:
 DELETE FROM userEntity

@@ -1,19 +1,27 @@
 package screens.server
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import errorMessage
 import moe.tlaster.precompose.navigation.Navigator
 import navigation.Screen
 import screens.serverList.ServerEvent
 import screens.serverList.ServerViewModel
-import ui.components.CarbonTextButton
-import ui.components.CarbonTextfield
-import ui.components.carbonTheme
+import screens.tagManagement.TagEvent
+import screens.tagManagement.TagViewModel
+import screens.userManagement.UserEvent
+import screens.userManagement.UserViewModel
+import ui.components.TerminalTextButton
+import ui.components.TerminalTextField
+import ui.components.terminalTheme
 import ui.theme.spacing
 
 /**
@@ -23,7 +31,9 @@ import ui.theme.spacing
 internal fun ServerTab(
     modifier: Modifier,
     navigator: Navigator,
-    serverVm: ServerViewModel
+    serverVm: ServerViewModel,
+    userVm: UserViewModel,
+    tagVm: TagViewModel
 ) {
 
     Column(
@@ -32,14 +42,25 @@ internal fun ServerTab(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         Column(
             modifier = Modifier.padding(
-                top = MaterialTheme.spacing.large,
-                start = MaterialTheme.spacing.large,
-                end = MaterialTheme.spacing.large
+                end = MaterialTheme.spacing.medium
             ).fillMaxWidth(), horizontalAlignment = Alignment.Start
+
         ) {
+            Row(
+                Modifier.padding(bottom = MaterialTheme.spacing.small).fillMaxWidth()
+                    .border(width = 3.dp, color = MaterialTheme.colors.onBackground)
+
+            ) {
+                Text(
+                    "Server",
+                    color = MaterialTheme.colors.onBackground,
+                    modifier = Modifier.padding(MaterialTheme.spacing.small),
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
             //Textfields
             LabelAndField(
                 modifier = Modifier.fillMaxWidth(),
@@ -97,6 +118,8 @@ internal fun ServerTab(
         SaveAndCancelButton(
             Modifier.padding(bottom = MaterialTheme.spacing.medium, start = MaterialTheme.spacing.medium),
             serverVm,
+            userVm,
+            tagVm,
             navigator
         )
 
@@ -116,13 +139,25 @@ private fun LabelAndField(
     onValueChange: (String) -> Unit
 ) {
     Row(
-        modifier = modifier
+        modifier = modifier.height(IntrinsicSize.Min).fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start
     ) {
-        CarbonTextfield(
-            modifier = Modifier.fillMaxWidth(),
+        Row(
+            modifier = Modifier.weight(0.3f).fillMaxSize().background(MaterialTheme.colors.onPrimary),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                label,
+                color = MaterialTheme.colors.background,
+                modifier = Modifier.padding(start = MaterialTheme.spacing.small)
+            )
+        }
+
+        TerminalTextField(
+            modifier = Modifier.weight(0.7f).fillMaxSize(),
             value = value,
             onValueChange = onValueChange,
-            label = label,
             isError = if (errorHandling) {
                 isError(value.isEmpty())
                 value.isEmpty()
@@ -132,40 +167,40 @@ private fun LabelAndField(
 }
 
 @Composable
-private fun SaveAndCancelButton(modifier: Modifier, serverVm: ServerViewModel, navigator: Navigator) {
+private fun SaveAndCancelButton(modifier: Modifier, serverVm: ServerViewModel, userVm: UserViewModel, tagVm: TagViewModel, navigator: Navigator) {
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.Start
     ) {
-        CarbonTextButton(
+        TerminalTextButton(
             onClick = {
-                serverVm.serverInvalid =
-                    serverVm.users.isEmpty() || serverVm.users.firstOrNull()?.username!!.isEmpty() ||
-                            serverVm.server.serverUrl.isEmpty()
-                if (!serverVm.serverInvalid) {
+                serverVm.serverUrlInvalid = serverVm.server.serverUrl.isEmpty()
+                if (!serverVm.serverUrlInvalid) {
                     val title = serverVm.server.title.ifEmpty { serverVm.server.serverUrl }
-                    serverVm.onEvent(ServerEvent.InsertServer(serverVm.server.copy(title = title)))
+                    val insertedServerId = serverVm.onEvent(ServerEvent.InsertServer(serverVm.server.copy(title = title)))
+                    userVm.onEvent(UserEvent.SaveServerConfiguration(insertedServerId!!))
+                    tagVm.onEvent(TagEvent.SaveServerConfiguration(insertedServerId))
                     navigator.navigate(Screen.ServerListScreen.name)
                 }
+                errorMessage = ""
             },
-            modifier = Modifier.padding(end = MaterialTheme.spacing.small).carbonTheme(),
+            modifier = Modifier.padding(end = MaterialTheme.spacing.small).terminalTheme(),
         ) {
             Text("Save", color = MaterialTheme.colors.onPrimary, modifier = it)
         }
-        CarbonTextButton(
-            onClick = { navigator.navigate(Screen.ServerListScreen.name) },
-            modifier = Modifier.carbonTheme(true)
+        TerminalTextButton(
+            onClick = {
+                navigator.navigate(Screen.ServerListScreen.name)
+                errorMessage = ""
+            },
+            modifier = Modifier.terminalTheme(true)
         ) {
             Text("Cancel", color = MaterialTheme.colors.onPrimary, modifier = it)
         }
 
-        if (serverVm.serverInvalid) {
-            Text(
-                text = "URL cannot be empty and at least one user must be configured.",
-                color = MaterialTheme.colors.error,
-                modifier = Modifier.padding(MaterialTheme.spacing.small)
-            )
+        if (serverVm.serverUrlInvalid) {
+            errorMessage = "URL cannot be empty."
         }
     }
 }

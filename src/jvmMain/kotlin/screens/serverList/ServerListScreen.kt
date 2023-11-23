@@ -8,6 +8,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import moe.tlaster.precompose.navigation.Navigator
+import screens.serverList.grid.ServerGrid
 import ui.theme.spacing
 
 /**
@@ -16,7 +17,7 @@ import ui.theme.spacing
  */
 @Composable
 fun ServerListScreen(navigator: Navigator) {
-    Column(modifier = Modifier.padding(MaterialTheme.spacing.medium)) {
+    Column {
         FilterPanel(Modifier.height(IntrinsicSize.Min).padding(bottom = MaterialTheme.spacing.small))
         ServerGrid(Modifier,navigator)
     }

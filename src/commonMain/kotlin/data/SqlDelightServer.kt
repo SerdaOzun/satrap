@@ -13,7 +13,7 @@ class SqlDelightServer(db: Database) : ServerDataSource {
     override suspend fun insertServer(server: Server): Long? {
         server.run {
             return queries.transactionWithResult {
-                queries.insertServer(serverId, serverUrl, title, organization, description, syncServer)
+                queries.insertServer(serverId, serverUrl, title, organization, description, syncServer, defaultUserId)
                 queries.getLastInsertedId().executeAsOneOrNull()
             }
         }

@@ -2,6 +2,8 @@ package util
 
 import domain.ServerComplete
 import screens.serverList.ServerViewModel
+import screens.tagManagement.TagViewModel
+import screens.userManagement.UserViewModel
 
 /**
  * Only display servers according to the filters chosen
@@ -9,21 +11,21 @@ import screens.serverList.ServerViewModel
  * 2: Server with the users which are selected
  * 3: Server with the tags which are selected
  */
-fun List<ServerComplete>.filterSearch(serverVM: ServerViewModel) = filter {
+fun List<ServerComplete>.filterSearch(serverVM: ServerViewModel, userVM: UserViewModel, tagVM: TagViewModel) = filter {
     it.server.serverUrl.lowercase().contains(serverVM.searchText.lowercase()) ||
             it.server.title.lowercase().contains(serverVM.searchText.lowercase())
 }
     .filter { serverList ->
-        if (serverVM.selectedUsers.isNotEmpty()) {
+        if (userVM.filteredUsers.isNotEmpty()) {
             serverList.users.any { u ->
-                serverVM.selectedUsers.map { selectedUser -> selectedUser.username }.contains(u.username)
+                userVM.filteredUsers.map { selectedUser -> selectedUser.username }.contains(u.username)
             }
         } else true
     }
     .filter { serverList ->
-        if (serverVM.selectedTags.isNotEmpty()) {
+        if (tagVM.filteredTags.isNotEmpty()) {
             serverList.tags.any { t ->
-                serverVM.selectedTags.map { selectedTag -> selectedTag.tag }.contains(t.tag)
+                tagVM.filteredTags.map { selectedTag -> selectedTag.tag }.contains(t.tag)
             }
         } else true
     }

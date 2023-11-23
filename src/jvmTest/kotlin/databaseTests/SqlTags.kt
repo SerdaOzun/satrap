@@ -5,7 +5,9 @@ import Testdata
 import domain.Tag
 import io.kotest.assertions.withClue
 import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.testng.annotations.Test
 
@@ -15,11 +17,16 @@ class SqlTags : DatabaseTestCase() {
     private val tagWithoutServerId = Testdata.tagWithoutServerId
     private lateinit var tagWithServerId: Tag
 
-    @Test(expectedExceptions = [NullPointerException::class])
+    @Test
     fun `Insert tag without server Id`() {
         runBlocking {
-            withClue("Insert a tag without a serverId. An exception is thrown") {
+            withClue("Insert a tag without a serverId. The tag is saved and has an empty list of servers") {
                 tagDataSource.insertTag(tagWithoutServerId)
+
+                tagDataSource.getAllTags().first().let {
+                    it.size shouldBe 1
+                    it.first().serverIds.shouldBeEmpty()
+                }
             }
         }
     }
@@ -33,12 +40,12 @@ class SqlTags : DatabaseTestCase() {
 
                 tagWithServerId = Tag(
                     tagId = null,
-                    serverId = serverId,
+                    serverIds = listOf(serverId),
                     tag = "Tag with serverId",
                     syncTag = true
                 )
                 tagDataSource.insertTag(tagWithServerId)
-                tagDataSource.getAllTag().size shouldBe 1
+                tagDataSource.getAllTags().first().size shouldBe 2
             }
         }
     }
@@ -46,10 +53,10 @@ class SqlTags : DatabaseTestCase() {
     @Test(dependsOnMethods = ["Insert tag"])
     fun `Get tags`() {
         runBlocking {
-            tagDataSource.getTagsByServerId(tagWithServerId.serverId!!).size shouldBe 1
+            tagDataSource.getTagsByServerId(tagWithServerId.serverIds!!.first()).size shouldBe 1
 
-            tagDataSource.getAllTag().single().let {
-                it.serverId shouldBe tagWithServerId.serverId
+            tagDataSource.getAllTags().first().last().let {
+                it.serverIds shouldContainExactly tagWithServerId.serverIds!!
                 it.tag shouldBe tagWithServerId.tag
                 it.syncTag shouldBe tagWithServerId.syncTag
             }
@@ -59,8 +66,10 @@ class SqlTags : DatabaseTestCase() {
     @Test(dependsOnMethods = ["Get tags"])
     fun `Delete tag`() {
         runBlocking {
-            tagDataSource.deleteTagById(tagDataSource.getAllTag().first().tagId!!)
-            tagDataSource.getAllTag().shouldBeEmpty()
+            tagDataSource.getAllTags().first().forEach {
+                tagDataSource.deleteTagById(it.tagId!!)
+            }
+            tagDataSource.getAllTags().first().shouldBeEmpty()
         }
     }
 }
