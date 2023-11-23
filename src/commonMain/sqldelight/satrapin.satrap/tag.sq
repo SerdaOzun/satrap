@@ -1,0 +1,36 @@
+import kotlin.Boolean;
+
+CREATE TABLE IF NOT EXISTS tagEntity (
+  tag_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  tag TEXT NOT NULL,
+  syncTag INTEGER AS Boolean NOT NULL DEFAULT 0 -- sync with remote
+);
+
+getLastInsertedId:
+SELECT last_insert_rowid();
+
+insertTag:
+INSERT OR REPLACE
+INTO tagEntity(tag_id, tag, syncTag)
+VALUES (?, ?, ? );
+
+getTagById:
+SELECT tag.*, tagserver.server_id
+FROM tagEntity AS tag
+JOIN TagServer AS tagserver ON tag.tag_id = tagserver.tag_id
+WHERE tag.tag_id = :id;
+
+getAllTags:
+SELECT tag.*, tagserver.server_id
+FROM tagEntity AS tag
+LEFT JOIN TagServer AS tagserver ON tag.tag_id = tagserver.tag_id;
+
+getTagsByServerId:
+SELECT tag.*, tagserver.server_id
+FROM tagEntity AS tag
+LEFT JOIN TagServer AS tagserver ON tag.tag_id = tagserver.tag_id
+WHERE server_id = ?;
+
+deleteTagById:
+DELETE FROM tagEntity
+WHERE tag_id = :id;

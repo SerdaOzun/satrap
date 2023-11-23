@@ -5,7 +5,9 @@ import Testdata
 import domain.User
 import io.kotest.assertions.withClue
 import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.testng.annotations.Test
 
@@ -15,11 +17,16 @@ class SqlUser : DatabaseTestCase() {
     private val userWithoutserverId = Testdata.userWithoutServerId
     private lateinit var userWithServerId: User
 
-    @Test(expectedExceptions = [NullPointerException::class])
+    @Test
     fun `Insert user without server Id`() {
         runBlocking {
-            withClue("Insert a user without a serverId. An exception is thrown") {
+            withClue("Insert a user without a serverId. The user is saved and has an empty list of servers") {
                 userDataSource.insertUser(userWithoutserverId)
+
+                userDataSource.getAllUser().first().let {
+                    it.size shouldBe 1
+                    it.first().serverIds.shouldBeEmpty()
+                }
             }
         }
     }
@@ -33,7 +40,7 @@ class SqlUser : DatabaseTestCase() {
 
                 userWithServerId = User(
                     null,
-                    serverId,
+                    listOf(serverId!!),
                     username = "User with server Id",
                     role = "Admin",
                     defaultUser = true,
@@ -41,7 +48,7 @@ class SqlUser : DatabaseTestCase() {
                     userLevelDescription = "All privileges"
                 )
                 userDataSource.insertUser(userWithServerId)
-                userDataSource.getAllUser().size shouldBe 1
+                userDataSource.getAllUser().first().size shouldBe 2
             }
         }
     }
@@ -49,10 +56,10 @@ class SqlUser : DatabaseTestCase() {
     @Test(dependsOnMethods = ["Insert user"])
     fun `Get users`() {
         runBlocking {
-            userDataSource.getUsersByServerid(userWithServerId.serverId!!).size shouldBe 1
+            userDataSource.getUsersByServerid(userWithServerId.serverIds!!.first()).size shouldBe 1
 
-            userDataSource.getAllUser().single().let {
-                it.serverId shouldBe userWithServerId.serverId
+            userDataSource.getAllUser().first().first { it.serverIds != null }.let {
+                it.serverIds shouldContainExactly userWithServerId.serverIds!!
                 it.username shouldBe userWithServerId.username
                 it.role shouldBe userWithServerId.role
                 it.defaultUser shouldBe userWithServerId.defaultUser
@@ -65,8 +72,10 @@ class SqlUser : DatabaseTestCase() {
     @Test(dependsOnMethods = ["Get users"])
     fun `Delete user`() {
         runBlocking {
-            userDataSource.deleteUserById(userDataSource.getAllUser().first().userId!!)
-            userDataSource.getAllUser().shouldBeEmpty()
+            userDataSource.getAllUser().first().forEach {
+                userDataSource.deleteUserById(it.userId!!)
+            }
+            userDataSource.getAllUser().first().shouldBeEmpty()
         }
     }
 }

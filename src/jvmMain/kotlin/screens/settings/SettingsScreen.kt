@@ -7,9 +7,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import config
 import ui.components.CarbonCombobox
-import ui.components.CarbonTextButton
-import ui.components.CarbonTextfield
-import ui.components.carbonTheme
+import ui.components.TerminalTextButton
+import ui.components.TerminalTextField
+import ui.components.terminalTheme
 import ui.theme.spacing
 import util.OS
 import util.currentOS
@@ -30,7 +30,7 @@ fun SettingsScreen() {
 
         //todo most likely remove. Only allow users to choose their shell from a combobox with tested shells
         if (currentOS == OS.LINUX) {
-            CarbonTextfield(
+            TerminalTextField(
                 label = "Shell",
                 value = config.shell,
                 onValueChange = {
@@ -42,9 +42,9 @@ fun SettingsScreen() {
         }
 
         Row {
-            CarbonTextButton(
+            TerminalTextButton(
                 modifier = Modifier.padding(end = MaterialTheme.spacing.small)
-                    .carbonTheme(isEnabled = config.changesMade),
+                    .terminalTheme(isEnabled = config.changesMade),
                 onClick = { config.onEvent(ConfigEvent.Save) },
                 enabled = config.changesMade
             ) {
@@ -52,8 +52,8 @@ fun SettingsScreen() {
             }
 
 
-            CarbonTextButton(
-                modifier = Modifier.carbonTheme(isError = true),
+            TerminalTextButton(
+                modifier = Modifier.terminalTheme(isError = true),
                 onClick = { config.onEvent(ConfigEvent.Reset) },
             ) {
                 Text("Reset to defaults", color = MaterialTheme.colors.onPrimary, modifier = it)

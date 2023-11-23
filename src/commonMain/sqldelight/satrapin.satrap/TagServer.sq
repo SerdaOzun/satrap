@@ -1,0 +1,30 @@
+CREATE TABLE IF NOT EXISTS TagServer (
+    tag_id INTEGER NOT NULL,
+    server_id INTEGER NOT NULL,
+    PRIMARY KEY(tag_id, server_id),
+    FOREIGN KEY (tag_id) REFERENCES tagEntity(tag_id) ON DELETE CASCADE,
+    FOREIGN KEY (server_id) REFERENCES serverEntity(server_id) ON DELETE CASCADE
+);
+
+insertRelation:
+INSERT OR REPLACE
+INTO TagServer(tag_id, server_id)
+VALUES (?, ?);
+
+getAll:
+SELECT *
+FROM TagServer;
+
+getAllByTagId:
+SELECT *
+FROM TagServer
+WHERE tag_id = :tagId;
+
+getAllByServerId:
+SELECT *
+FROM TagServer
+WHERE server_id = :serverId;
+
+deleteRelation:
+DELETE FROM TagServer
+WHERE tag_id = :tagId AND server_id = :serverId;

@@ -9,7 +9,8 @@ object Testdata {
         title = "server-title",
         organization = "Testorg",
         description = "test",
-        syncServer = false
+        syncServer = false,
+        defaultUserId = 1L
     )
     val userWithoutServerId = User(
         null,
@@ -22,7 +23,7 @@ object Testdata {
     )
     val tagWithoutServerId = Tag(
         tagId = null,
-        serverId = null,
+        serverIds = emptyList(),
         tag = "Tag without serverId",
         syncTag = true
     )

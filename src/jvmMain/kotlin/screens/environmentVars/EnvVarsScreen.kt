@@ -19,8 +19,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import moe.tlaster.precompose.navigation.Navigator
-import screens.serverList.TableCell
-import screens.serverList.TableImgButton
+import screens.serverList.grid.TableCell
+import screens.serverList.grid.TableImgButton
 import ui.theme.spacing
 
 /**

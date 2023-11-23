@@ -1,0 +1,30 @@
+CREATE TABLE IF NOT EXISTS UserServer (
+    user_id INTEGER NOT NULL,
+    server_id INTEGER NOT NULL,
+    PRIMARY KEY(user_id, server_id),
+    FOREIGN KEY (user_id) REFERENCES userEntity(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (server_id) REFERENCES serverEntity(server_id) ON DELETE CASCADE
+);
+
+insertRelation:
+INSERT OR REPLACE
+INTO UserServer(user_id, server_id)
+VALUES (?, ?);
+
+getAll:
+SELECT *
+FROM UserServer;
+
+getAllByUserId:
+SELECT *
+FROM UserServer
+WHERE user_id = :userId;
+
+getAllByServerId:
+SELECT *
+FROM UserServer
+WHERE server_id = :serverId;
+
+deleteRelation:
+DELETE FROM UserServer
+WHERE user_id = :userId AND server_id = :serverId;

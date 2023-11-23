@@ -23,8 +23,10 @@ import ui.theme.spacing
 @Composable
 fun <T> CarbonMultiselectCombobox(
     modifier: Modifier,
+    filterName: String,
     selectedOptions: List<T>,
     allOptions: List<T>,
+    contains: (List<T>, T) -> Boolean,
     onClick: (T) -> Unit
 ) {
     var size by remember { mutableStateOf(IntSize.Zero) }
@@ -36,7 +38,7 @@ fun <T> CarbonMultiselectCombobox(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            if (selectedOptions.isEmpty()) "Choose filter options" else "${selectedOptions.size} objects filtered",
+            if (selectedOptions.isEmpty()) "$filterName filter options" else "${selectedOptions.size} $filterName object filtered",
             modifier = Modifier.weight(0.9f).padding(start = 10.dp)
         )
         Icon(
@@ -59,7 +61,7 @@ fun <T> CarbonMultiselectCombobox(
                             onClick(opt)
                         }) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Checkbox(checked = selectedOptions.contains(opt), onCheckedChange = {})
+                                Checkbox(checked = contains(selectedOptions, opt), onCheckedChange = { onClick(opt) })
                                 Text(text = opt.toString(), color = MaterialTheme.colors.onBackground)
                             }
                         }
@@ -77,7 +79,7 @@ fun <T> CarbonMultiselectCombobox(
 }
 
 @Composable
-fun <T> CarbonCombobox(modifier: Modifier, selectedOption: T, options: List<T>, onClick: (T) -> Unit) {
+fun <T> CarbonCombobox(modifier: Modifier, selectedOption: T?, options: List<T>, onClick: (T) -> Unit) {
     var size by remember { mutableStateOf(IntSize.Zero) }
     var expanded by remember { mutableStateOf(false) }
     Row(
@@ -86,7 +88,10 @@ fun <T> CarbonCombobox(modifier: Modifier, selectedOption: T, options: List<T>, 
             .onSizeChanged { size = it },
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(selectedOption.toString(), modifier = Modifier.weight(0.9f).padding(start = 10.dp))
+        Text(
+            selectedOption?.toString() ?: "SSH Agent",
+            modifier = Modifier.weight(0.9f).padding(start = 10.dp)
+        )
         Icon(
             if (expanded) Icons.Default.KeyboardArrowDown else Icons.Default.KeyboardArrowUp,
             "",
@@ -98,7 +103,7 @@ fun <T> CarbonCombobox(modifier: Modifier, selectedOption: T, options: List<T>, 
             onDismissRequest = { expanded = false },
             modifier = Modifier.width(size.width.dp)
         ) {
-            options.forEach { opt ->
+            options.sortedBy { it.toString() }.forEach { opt ->
                 DropdownMenuItem(onClick = {
                     onClick(opt)
                     expanded = false

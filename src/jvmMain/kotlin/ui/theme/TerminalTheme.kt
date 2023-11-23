@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun IbmCarbonTheme(
+fun TerminalTheme(
     appTheme: AppTheme,
     content: @Composable () -> Unit
 ) {
@@ -36,19 +36,20 @@ fun IbmCarbonTheme(
     } else {
         lightColors(
             primary = Color(0xFF0043ce), // selektiert Text
-            primaryVariant = Color(0xFF0f62fe), // selektiert Icon
-            onPrimary = Color(0xFFffffff), // normaler Text
+            primaryVariant = Color(0xFF36557), // selektiert Icon
+            onPrimary = Color(0xFF000000), // normaler Text
             secondary = Color(0xFF005d5d), // nicht selektiert
-            secondaryVariant = Color(0xFF007d79), // nicht selektiert
-            onSecondary = Color(0xFFffffff),
-            background = Color(0xFFf4f4f4),
+            secondaryVariant = Color(0xFFBFF29B), // nicht selektiert
+            onSecondary = Color(0xFF000000),
+            background = Color(0xFFffffff),
             surface = Color(0xFFffffff), // Buttonfarbe
-            onBackground = Color(0xFF161616), // Button farbe
-            onSurface = Color(0xFF8d8d8d),
-            error = Color(0xFFda1e28),
+            onBackground = Color(0xFF000000), // Button farbe
+            onSurface = Color(0xFF000000),
+            error = Color(0xFFEA361F),
             onError = Color(0xFFffffff)
         )
     }
+
 
     val ibmCarbonFont = FontFamily(
         Font("font/IBMPlexSans-Bold.ttf", weight = FontWeight.Bold, style = FontStyle.Normal),
