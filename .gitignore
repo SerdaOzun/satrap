@@ -18,6 +18,7 @@ out/
 /.idea/inspectionProfiles/Project_Default.xml
 .name
 .idea/workspace.xml
+.idea/uiDesigner.xml
 
 ### Eclipse ###
 .apt_generated
