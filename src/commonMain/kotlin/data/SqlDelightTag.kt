@@ -3,59 +3,85 @@ package data
 import app.cash.sqldelight.coroutines.asFlow
 import domain.Tag
 import domain.TagDataSource
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import satrapco.satrap.Database
 import satrapinsatrap.GetAllTags
 import satrapinsatrap.GetTagById
 import satrapinsatrap.GetTagsByServerId
 
-class SqlDelightTag(db: Database) : TagDataSource {
+class SqlDelightTag(
+    db: Database,
+    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
+) : TagDataSource {
 
     private val queries = db.tagQueries
     private val tagServerQueries = db.tagServerQueries
 
-    override suspend fun insertTag(tag: Tag): Long? {
-        val insertedTagId: Long? = queries.transactionWithResult {
-            queries.insertTag(
-                tag_id = tag.tagId,
-                tag = tag.tag,
-                syncTag = tag.syncTag
-            )
-            queries.getLastInsertedId().executeAsOneOrNull()
+    override suspend fun insert(tag: Tag): Long? {
+        return withContext(coroutineDispatcher) {
+            async {
+                queries.transactionWithResult {
+                    queries.insertTag(
+                        tag_id = tag.tagId,
+                        tag = tag.tag,
+                        syncTag = tag.syncTag
+                    )
+                    queries.getLastInsertedId().executeAsOneOrNull()
+                }
+            }.await()?.let { insertedTagId ->
+                tag.serverIds?.forEach { serverId ->
+                    withContext(Dispatchers.IO) {
+                        addTagToServer(insertedTagId, serverId)
+                    }
+                }
+                insertedTagId
+            }
         }
-        tag.serverIds?.forEach { serverId ->
-            addTagToServer(insertedTagId!!, serverId)
-        }
-        return insertedTagId
     }
 
-    override suspend fun getTagById(id: Long): Tag {
-        return queries.getTagById(id).executeAsList().toTag().first()
+    override suspend fun get(id: Long): Tag {
+        return withContext(coroutineDispatcher) {
+            async {
+                queries.getTagById(id).executeAsList().toTag().first()
+            }
+        }.await()
     }
 
-    override fun getAllTags(): Flow<List<Tag>> {
+    override fun getAll(): Flow<List<Tag>> {
         return queries.getAllTags().asFlow().map { query -> query.executeAsList().toTag() }
     }
 
-    override suspend fun getTagsByServerId(serverId: Long): List<Tag> {
-        return queries.getTagsByServerId(serverId).executeAsList().toTag()
+    override suspend fun getAllByServerId(serverId: Long): List<Tag> {
+        return withContext(coroutineDispatcher) {
+            async {
+                queries.getTagsByServerId(serverId).executeAsList().toTag()
+            }
+        }.await()
     }
 
-    override suspend fun deleteTagById(id: Long) {
-        queries.deleteTagById(id)
+    override suspend fun delete(id: Long) {
+        withContext(coroutineDispatcher) { queries.deleteTagById(id) }
     }
 
     override suspend fun getLastInsertedId(): Long? {
-        return queries.getLastInsertedId().executeAsOneOrNull()
+        return withContext(coroutineDispatcher) {
+            async {
+                queries.getLastInsertedId().executeAsOneOrNull()
+            }
+        }.await()
     }
 
     override suspend fun addTagToServer(tagId: Long, serverId: Long) {
-        tagServerQueries.insertRelation(tag_id = tagId, server_id = serverId)
+        withContext(coroutineDispatcher) { tagServerQueries.insertRelation(tag_id = tagId, server_id = serverId) }
     }
 
     override suspend fun removeTagFromServer(tagId: Long, serverId: Long) {
-        tagServerQueries.deleteRelation(tagId = tagId, serverId = serverId)
+        withContext(coroutineDispatcher) { tagServerQueries.deleteRelation(tagId = tagId, serverId = serverId) }
     }
 }
 

@@ -22,8 +22,8 @@ class SqlServer : DatabaseTestCase() {
     fun `Insert server`() {
         runBlocking {
             withClue("Insert a server into the database. The database should contain one Server") {
-                serverDataSource.insertServer(server)
-                serverDataSource.getAllServer().first().size shouldBe 1
+                serverDataSource.insert(server)
+                serverDataSource.getServer().first().size shouldBe 1
             }
         }
     }
@@ -33,7 +33,7 @@ class SqlServer : DatabaseTestCase() {
         runBlocking {
             serverId = serverDataSource.getLastInsertedId()
 
-            serverDataSource.getServerById(serverId!!)!!.apply {
+            serverDataSource.get(serverId!!)!!.apply {
                 serverUrl shouldBe server.serverUrl
                 title shouldBe server.title
                 organization shouldBe server.organization
@@ -47,8 +47,8 @@ class SqlServer : DatabaseTestCase() {
     @Test(dependsOnMethods = ["Get server"])
     fun `Delete server`() {
         runBlocking {
-            serverDataSource.deleteServerById(serverId!!)
-            serverDataSource.getAllServer().first().shouldBeEmpty()
+            serverDataSource.delete(serverId!!)
+            serverDataSource.getServer().first().shouldBeEmpty()
         }
     }
 }

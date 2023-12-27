@@ -7,17 +7,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import domain.Tag
 import domain.TagDataSource
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
 
 class TagViewModel(
-    private val tagDataSource: TagDataSource = AppDatabase.sqlDelightTag
+    private val tagDataSource: TagDataSource = AppDatabase.sqlTag
 ) : ViewModel() {
 
-    val allTags = tagDataSource.getAllTags()
+    val allTags = tagDataSource.getAll()
     var filteredTags = mutableStateListOf<Tag>()
 
     var selectedTags by mutableStateOf(emptyList<Tag>())
@@ -25,28 +24,16 @@ class TagViewModel(
 
     fun onEvent(tagEvent: TagEvent): Long? {
 
-        suspend fun loadTags(tagId: Long?): List<Tag> {
-            return viewModelScope.async {
-                if (tagId == null) emptyList() else
-                    tagDataSource.getTagsByServerId(tagId)
-            }.await()
-        }
-
-        suspend fun insertTag(tag: Tag): Long? {
-            return viewModelScope.async {
-                tagDataSource.insertTag(tag)
-            }.await()
-        }
-
         var tagId: Long? = null
         viewModelScope.launch {
             when (tagEvent) {
                 is TagEvent.LoadTags -> {
-                    selectedTags = loadTags(tagEvent.serverId)
+                    selectedTags = if (tagEvent.serverId == null) emptyList() else
+                        tagDataSource.getAllByServerId(tagEvent.serverId)
                 }
 
-                is TagEvent.InsertTag -> tagId = insertTag(tagEvent.tag)
-                is TagEvent.DeleteTag -> tagDataSource.deleteTagById(tagEvent.tag.tagId!!)
+                is TagEvent.InsertTag -> tagId = tagDataSource.insert(tagEvent.tag)
+                is TagEvent.DeleteTag -> tagDataSource.delete(tagEvent.tag.tagId!!)
                 is TagEvent.SelectTag -> {
                     if (tagEvent.tag.tagId !in selectedTags.map { it.tagId }) {
                         selectedTags += tagEvent.tag
@@ -84,7 +71,7 @@ class TagViewModel(
                         }
                     //Update the tags themselves
                     selectedTags.forEach {
-                        tagDataSource.insertTag(it)
+                        tagDataSource.insert(it)
                     }
                 }
             }

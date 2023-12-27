@@ -29,12 +29,12 @@ class SqlServerComplete : DatabaseTestCase() {
         }
         runBlocking {
             servers.forEach {
-                serverDataSource.insertServer(it)
+                serverDataSource.insert(it)
             }
 
-            serverDataSource.getAllServer().first().forEachIndexed { index, server ->
+            serverDataSource.getServer().first().forEachIndexed { index, server ->
                 (0..index).map {
-                    tagDataSource.insertTag(
+                    tagDataSource.insert(
                         Tag(tagId = null, serverIds = listOf(server.serverId!!), tag = "tag$it", syncTag = it % 2 == 0)
                     )
                 }
@@ -60,7 +60,7 @@ class SqlServerComplete : DatabaseTestCase() {
     fun `Get all Server Completes`() {
         runBlocking {
             (0..4).forEach { index ->
-                serverDataSource.getAllServerComplete().first().forOne { serverComplete ->
+                serverCompleteDataSource.getAll().first().forOne { serverComplete ->
                     serverComplete.server.title shouldBe "title$index"
                     serverComplete.tags.map { it.tag } shouldContainAll (0..index).map { tagIndex -> "tag$tagIndex" }
                     serverComplete.users.map { it.username } shouldContainAll (0..index).map { userIndex -> "username$userIndex" }

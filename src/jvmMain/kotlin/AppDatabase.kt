@@ -1,7 +1,4 @@
-import data.SqlDelightServer
-import data.SqlDelightSettings
-import data.SqlDelightTag
-import data.SqlDelightUser
+import data.*
 
 /**
  * Contains the necessary objects with which to interact with the database
@@ -9,9 +6,10 @@ import data.SqlDelightUser
 object AppDatabase {
     private val database = createDatabase(DriverFactory())
 
-    val sqlDelightServer = SqlDelightServer(database)
-    val sqlDelightTag = SqlDelightTag(database)
-    val sqlDelightUser = SqlDelightUser(database)
+    val sqlServer = SqlDelightServer(database)
+    val sqlServerComplete = SqlDelightServerComplete(database)
+    val sqlTag = SqlDelightTag(database)
+    val sqlUser = SqlDelightUser(database)
 
-    val sqlDelightSettings = SqlDelightSettings(database)
+    val sqlSettings = SqlDelightSettings(database)
 }

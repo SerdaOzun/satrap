@@ -35,7 +35,7 @@ class SqlUser : DatabaseTestCase() {
     fun `Insert user`() {
         runBlocking {
             withClue("Insert a server and a user with a server Id into the database. The database should contain one user") {
-                serverDataSource.insertServer(server)
+                serverDataSource.insert(server)
                 val serverId = serverDataSource.getLastInsertedId()
 
                 userWithServerId = User(

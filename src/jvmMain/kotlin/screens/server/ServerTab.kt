@@ -179,7 +179,7 @@ private fun SaveAndCancelButton(modifier: Modifier, serverVm: ServerViewModel, u
                 if (!serverVm.serverUrlInvalid) {
                     val title = serverVm.server.title.ifEmpty { serverVm.server.serverUrl }
                     val insertedServerId = serverVm.onEvent(ServerEvent.InsertServer(serverVm.server.copy(title = title)))
-                    userVm.onEvent(UserEvent.SaveServerConfiguration(insertedServerId!!))
+                    userVm.onEvent(UserEvent.SaveServerConfiguration(insertedServerId))
                     tagVm.onEvent(TagEvent.SaveServerConfiguration(insertedServerId))
                     navigator.navigate(Screen.ServerListScreen.name)
                 }
