@@ -28,16 +28,16 @@ import ui.theme.spacing
 @Composable
 private fun TagSelection(tag: Tag, tagVm: TagViewModel, serverVm: ServerViewModel) {
 
+    /**
+     * @param server
+     * @param hasSelectedTagAssigned the selected tag is already assigned to the server
+     * @param onSelect
+     */
     @Composable
-            /**
-             * @param tag
-             * @param hasSelectedTagAssigned the selected tag is already assigned to the server
-             * @param onSelect
-             */
-    fun TagItem(
+    fun ServerItem(
         server: Server,
         hasSelectedTagAssigned: Boolean,
-        onSelect: (Long) -> Unit
+        onSelect: () -> Unit
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -51,7 +51,7 @@ private fun TagSelection(tag: Tag, tagVm: TagViewModel, serverVm: ServerViewMode
             //Selection
             ColorRow(
                 modifier = Modifier.weight(0.10f).fillMaxSize()
-                    .clickable { onSelect(server.serverId!!) }
+                    .clickable { onSelect() }
                     .background(if (hasSelectedTagAssigned) MaterialTheme.colors.LightGreen else MaterialTheme.colors.background),
                 horizontal = Arrangement.Center,
                 withBorder = true
@@ -63,7 +63,7 @@ private fun TagSelection(tag: Tag, tagVm: TagViewModel, serverVm: ServerViewMode
                 modifier = Modifier.weight(0.55f).fillMaxSize()
                     .selectable(
                         selected = hasSelectedTagAssigned,
-                        onClick = { onSelect(server.serverId!!) }
+                        onClick = { onSelect() }
                     )
                     .background(MaterialTheme.colors.onBackground),
                 verticalAlignment = Alignment.CenterVertically
@@ -86,7 +86,7 @@ private fun TagSelection(tag: Tag, tagVm: TagViewModel, serverVm: ServerViewMode
 
     servers.value.forEach { server ->
         val serverHasTag = server.tags.map { u -> u.tagId }.contains(tag.tagId)
-        TagItem(server.server, serverHasTag) {
+        ServerItem(server.server, serverHasTag) {
             if (serverHasTag) {
                 tagVm.onEvent(TagEvent.DeleteTagFromServer(tag, server.server))
             } else {
@@ -119,7 +119,10 @@ fun TagAssignmentGrid(
         Row(Modifier.border(width = 3.dp, shape = RectangleShape, color = MaterialTheme.colors.onBackground)) {
             val state = rememberLazyListState()
 
-            LazyColumn(modifier = Modifier.fillMaxSize().weight(0.85f).padding(top = MaterialTheme.spacing.small), state) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize().weight(0.85f).padding(top = MaterialTheme.spacing.small),
+                state
+            ) {
                 if (tags.map { it.tagId }.contains(selectedTagId)) {
                     item {
                         TagSelection(tags.first { it.tagId == selectedTagId }, tagVm, serverVm)

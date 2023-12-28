@@ -25,9 +25,11 @@ import ui.theme.spacing
 import util.currentOS
 import java.awt.Dimension
 
+val config by lazy { Config() }
+val logger = KotlinLogging.logger {}
+var errorMessage by mutableStateOf("")
 
 fun main() {
-    val logger = KotlinLogging.logger {}
     logger.info { "Running on OS: $currentOS" }
 
     application {
@@ -45,10 +47,6 @@ fun main() {
         }
     }
 }
-
-val config by lazy { Config() }
-
-var errorMessage by mutableStateOf("")
 
 @Composable
 fun App() {

@@ -17,7 +17,7 @@ import util.currentOS
  * @see SettingOptions for available settings which are also top level Variables in this class
  */
 class Config(
-    private val settingsDataSource: SettingsDataSource = AppDatabase.sqlDelightSettings
+    private val settingsDataSource: SettingsDataSource = AppDatabase.sqlSettings
 ) : ViewModel() {
 
     var changesMade by mutableStateOf(false)

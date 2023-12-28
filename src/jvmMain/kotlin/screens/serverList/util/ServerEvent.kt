@@ -1,4 +1,4 @@
-package screens.serverList
+package screens.serverList.util
 
 import domain.Server
 

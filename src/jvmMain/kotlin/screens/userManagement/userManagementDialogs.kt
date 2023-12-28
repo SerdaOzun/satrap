@@ -12,7 +12,7 @@ fun userManagementDialogs(
     showDialog: Boolean,
     dialogType: DialogType,
     userVm: UserViewModel,
-    selectedUser: User?,
+    selectedUser: User,
     onShowDialog: (Boolean) -> Unit
 ) {
     if (showDialog) {
@@ -44,7 +44,7 @@ fun userManagementDialogs(
                         TerminalTextField(label = "Enter the new name...", value = newUser, onValueChange = { newUser = it })
                     },
                     onConfirm = {
-                        userVm.onEvent(UserEvent.InsertUser(selectedUser!!.copy(username = newUser)))
+                        userVm.onEvent(UserEvent.InsertUser(selectedUser.copy(username = newUser)))
                         newUser = ""
                         onShowDialog(false)
                     },
@@ -60,7 +60,7 @@ fun userManagementDialogs(
                     message = "Are you sure you want to delete the user?",
                     confirmButtonLabel = "Delete",
                     onConfirm = {
-                        userVm.onEvent(UserEvent.DeleteUser(selectedUser!!.userId!!))
+                        userVm.onEvent(UserEvent.DeleteUser(selectedUser.userId))
                         onShowDialog(false)
                     },
                     confirmButtonColor = MaterialTheme.colors.error,

@@ -24,7 +24,7 @@ fun ServerScreen(
 ) {
     Column(modifier = Modifier.padding(MaterialTheme.spacing.small)) {
         Row {
-            ServerTab(modifier = Modifier.weight(0.5f), navigator, serverVm, userVm, tagVm)
+            ServerView(modifier = Modifier.weight(0.5f), navigator, serverVm, userVm, tagVm)
             Spacer(modifier = Modifier.weight(0.02f).fillMaxSize())
             UserTagTab(modifier = Modifier.weight(0.5f))
         }

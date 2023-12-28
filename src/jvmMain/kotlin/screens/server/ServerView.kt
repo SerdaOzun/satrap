@@ -13,8 +13,8 @@ import androidx.compose.ui.unit.dp
 import errorMessage
 import moe.tlaster.precompose.navigation.Navigator
 import navigation.Screen
-import screens.serverList.ServerEvent
 import screens.serverList.ServerViewModel
+import screens.serverList.util.ServerEvent
 import screens.tagManagement.TagEvent
 import screens.tagManagement.TagViewModel
 import screens.userManagement.UserEvent
@@ -28,7 +28,7 @@ import ui.theme.spacing
  * Left Side of the Server screen concerning details of the server
  */
 @Composable
-internal fun ServerTab(
+internal fun ServerView(
     modifier: Modifier,
     navigator: Navigator,
     serverVm: ServerViewModel,
@@ -91,28 +91,7 @@ internal fun ServerTab(
             ) {
                 serverVm.server = serverVm.server.copy(description = it)
             }
-
-
-            //Checkboxes
-            /*
-            Column {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    CarbonCheckbox(
-                        serverVm.server.sync,
-                        onCheckedChange = { serverVm.server = serverVm.server.copy(sync = it) })
-                    Text("Sync with Server")
-                }
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    CarbonCheckbox(
-                        serverVm.server.customServer,
-                        onCheckedChange = { serverVm.server = serverVm.server.copy(customServer = it) })
-                    Text("Custom")
-                }
-            }
-             */
         }
-
 
         //Buttons
         SaveAndCancelButton(
@@ -167,7 +146,13 @@ private fun LabelAndField(
 }
 
 @Composable
-private fun SaveAndCancelButton(modifier: Modifier, serverVm: ServerViewModel, userVm: UserViewModel, tagVm: TagViewModel, navigator: Navigator) {
+private fun SaveAndCancelButton(
+    modifier: Modifier,
+    serverVm: ServerViewModel,
+    userVm: UserViewModel,
+    tagVm: TagViewModel,
+    navigator: Navigator
+) {
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.Bottom,
@@ -176,14 +161,24 @@ private fun SaveAndCancelButton(modifier: Modifier, serverVm: ServerViewModel, u
         TerminalTextButton(
             onClick = {
                 serverVm.serverUrlInvalid = serverVm.server.serverUrl.isEmpty()
+
                 if (!serverVm.serverUrlInvalid) {
                     val title = serverVm.server.title.ifEmpty { serverVm.server.serverUrl }
-                    val insertedServerId = serverVm.onEvent(ServerEvent.InsertServer(serverVm.server.copy(title = title)))
-                    userVm.onEvent(UserEvent.SaveServerConfiguration(insertedServerId!!))
-                    tagVm.onEvent(TagEvent.SaveServerConfiguration(insertedServerId))
-                    navigator.navigate(Screen.ServerListScreen.name)
+                    val insertedServerId =
+                        serverVm.onEvent(ServerEvent.InsertServer(serverVm.server.copy(title = title)))
+
+                    if (insertedServerId != null) {
+                        userVm.onEvent(UserEvent.SaveServerConfiguration(insertedServerId))
+                        tagVm.onEvent(TagEvent.SaveServerConfiguration(insertedServerId))
+                        navigator.navigate(Screen.ServerListScreen.name)
+                    }
+
+                    errorMessage = if (insertedServerId == null) {
+                        "An error occurred. Please try again"
+                    } else {
+                        ""
+                    }
                 }
-                errorMessage = ""
             },
             modifier = Modifier.padding(end = MaterialTheme.spacing.small).terminalTheme(),
         ) {

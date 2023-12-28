@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import domain.ServerComplete
 import domain.User
-import screens.serverList.ServerHeader
+import screens.serverList.util.ServerHeader
 import ui.components.CarbonCombobox
 import util.runCommand
 
@@ -30,7 +30,7 @@ fun ServerItem(
     }
 
     Row(
-        modifier = Modifier.clickable { if (selectedId != serverComplete.server.serverId) onSelect(serverComplete.server.serverId!!) }
+        modifier = Modifier.clickable { if (selectedId != serverComplete.server.serverId) onSelect(serverComplete.server.serverId) }
             .height(IntrinsicSize.Min)
             .border(width = 1.dp, color = MaterialTheme.colors.onPrimary),
         verticalAlignment = Alignment.CenterVertically

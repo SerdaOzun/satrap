@@ -49,7 +49,7 @@ fun TagManagementScreen(
                 }
                 //List of users
                 items(tags) { tag ->
-                    TagItem(tag, selectedTagId) { selectedTagId = it }
+                    TagItem(tag, selectedTagId) { selectedTagId = it ?: -1 }
                 }
             }
 
@@ -61,9 +61,9 @@ fun TagManagementScreen(
 }
 
 @Composable
-private fun TagItem(tag: Tag, selectedId: Long, onSelect: (Long) -> Unit) {
+private fun TagItem(tag: Tag, selectedId: Long, onSelect: (Long?) -> Unit) {
     Row(
-        modifier = Modifier.clickable { if (selectedId != tag.tagId) onSelect(tag.tagId!!) }
+        modifier = Modifier.clickable { if (selectedId != tag.tagId) onSelect(tag.tagId) }
             .height(IntrinsicSize.Min)
             .fillMaxWidth()
             .border(width = 1.dp, color = MaterialTheme.colors.onPrimary),

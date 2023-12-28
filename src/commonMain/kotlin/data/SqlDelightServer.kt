@@ -1,44 +1,50 @@
 package data
 
 import app.cash.sqldelight.coroutines.asFlow
-import domain.*
+import domain.Server
+import domain.ServerDataSource
+import domain.toServer
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import satrapco.satrap.Database
 
-class SqlDelightServer(db: Database) : ServerDataSource {
+class SqlDelightServer(
+    db: Database,
+    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
+) : ServerDataSource {
 
     private val queries = db.serverQueries
 
-    override suspend fun insertServer(server: Server): Long? {
+    override suspend fun insert(server: Server): Long? = queries.transactionWithResult {
         server.run {
-            return queries.transactionWithResult {
-                queries.insertServer(serverId, serverUrl, title, organization, description, syncServer, defaultUserId)
-                queries.getLastInsertedId().executeAsOneOrNull()
-            }
+            queries.insertServer(
+                if (serverId < 0) null else serverId,
+                serverUrl,
+                title,
+                organization,
+                description,
+                syncServer,
+                defaultUserId
+            )
+            queries.getLastInsertedId().executeAsOneOrNull()
         }
     }
 
-    override suspend fun getServerById(id: Long): Server? {
+    override suspend fun get(id: Long): Server? {
         return queries.getServerById(id).executeAsOneOrNull()?.toServer()
     }
 
-    override suspend fun getServerCompleteById(id: Long): ServerComplete? {
-        return queries.getServerCompleteById(id).executeAsList().toServerComplete().firstOrNull()
-    }
-
-    override fun getAllServerComplete(): Flow<List<ServerComplete>> {
-        return queries.getAllData().asFlow().map { query ->
-            query.executeAsList().toServersComplete().distinct()
-        }
-    }
-
-    override fun getAllServer(): Flow<List<Server>> {
+    override fun getServer(): Flow<List<Server>> {
         return queries.getAllServers().asFlow().map { query -> query.executeAsList().map { it.toServer() } }
     }
 
-    override suspend fun deleteServerById(id: Long) {
-        queries.deleteServerById(id)
+    override suspend fun delete(id: Long) {
+        withContext(coroutineDispatcher) {
+            queries.deleteServerById(id)
+        }
     }
 
     override suspend fun getLastInsertedId(): Long? {

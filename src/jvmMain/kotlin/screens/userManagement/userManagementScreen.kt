@@ -63,7 +63,7 @@ fun UserManagementScreen(
 @Composable
 private fun UserItem(user: User, selectedId: Long, onSelect: (Long) -> Unit) {
     Row(
-        modifier = Modifier.clickable { if (selectedId != user.userId) onSelect(user.userId!!) }
+        modifier = Modifier.clickable { if (selectedId != user.userId) onSelect(user.userId) }
             .height(IntrinsicSize.Min)
             .fillMaxWidth()
             .border(width = 1.dp, color = MaterialTheme.colors.onPrimary),

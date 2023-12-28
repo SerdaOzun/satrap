@@ -3,24 +3,29 @@ package data
 import app.cash.sqldelight.coroutines.asFlow
 import domain.User
 import domain.UserDataSource
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import satrapco.satrap.Database
 import satrapinsatrap.GetAllUser
 import satrapinsatrap.GetUserById
 import satrapinsatrap.GetUsersByServerId
 
-class SqlDelightUser(db: Database) : UserDataSource {
+class SqlDelightUser(
+    db: Database,
+    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
+) : UserDataSource {
 
     private val queries = db.userQueries
     private val userServerQueries = db.userServerQueries
 
     override suspend fun insertUser(user: User): Long? {
-        var insertedUserId: Long? = -1L
         with(user) {
-            insertedUserId = queries.transactionWithResult {
+            return queries.transactionWithResult {
                 queries.insertUser(
-                    user_id = userId,
+                    user_id = if (userId < 0) null else userId,
                     username = username,
                     role = role,
                     defaultUser = defaultUser,
@@ -28,12 +33,13 @@ class SqlDelightUser(db: Database) : UserDataSource {
                     userLevelDescription = userLevelDescription
                 )
                 queries.getLastInsertedId().executeAsOneOrNull()
-            }
-            serverIds?.forEach { serverId ->
-                addUserToServers(userId = insertedUserId!!, serverId = serverId)
+            }?.let { insertedUserId ->
+                serverIds.forEach { serverId ->
+                    addUserToServers(userId = insertedUserId, serverId = serverId)
+                }
+                insertedUserId
             }
         }
-        return insertedUserId
     }
 
     override suspend fun getUserById(id: Long): User {
@@ -49,21 +55,20 @@ class SqlDelightUser(db: Database) : UserDataSource {
     }
 
     override suspend fun deleteUserById(id: Long) {
-        queries.deleteUserById(id)
+        withContext(coroutineDispatcher) { queries.deleteUserById(id) }
     }
 
     override suspend fun addUserToServers(userId: Long, serverId: Long) {
-        userServerQueries.insertRelation(user_id = userId, server_id = serverId)
+        withContext(coroutineDispatcher) { userServerQueries.insertRelation(user_id = userId, server_id = serverId) }
     }
 
     override suspend fun deleteUserFromServer(userId: Long, serverId: Long) {
-        userServerQueries.deleteRelation(userId, serverId)
+        withContext(coroutineDispatcher) { userServerQueries.deleteRelation(userId, serverId) }
     }
 
     override suspend fun getLastInsertedId(): Long? {
         return queries.getLastInsertedId().executeAsOneOrNull()
     }
-
 }
 
 @JvmName("UserListToUser1")
@@ -73,7 +78,7 @@ private fun List<GetUserById>.toUser(): List<User> {
     return this.distinctBy { it.user_id }.map {
         User(
             it.user_id,
-            userServersMap[it.user_id],
+            userServersMap[it.user_id] ?: emptyList(),
             it.username,
             it.role,
             it.defaultUser,
@@ -90,7 +95,7 @@ private fun List<GetAllUser>.toUser(): List<User> {
     return this.distinctBy { it.user_id }.map {
         User(
             it.user_id,
-            userServersMap[it.user_id],
+            userServersMap[it.user_id] ?: emptyList(),
             it.username,
             it.role,
             it.defaultUser,
@@ -107,7 +112,7 @@ private fun List<GetUsersByServerId>.toUser(): List<User> {
     return this.distinctBy { it.user_id }.map {
         User(
             it.user_id,
-            userServersMap[it.user_id],
+            userServersMap[it.user_id] ?: emptyList(),
             it.username,
             it.role,
             it.defaultUser,

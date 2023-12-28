@@ -20,6 +20,10 @@ import screens.tagManagement.TagViewModel
 import screens.userManagement.UserViewModel
 import ui.theme.spacing
 
+
+/**
+ * Displays tag or user view
+ */
 @Composable
 internal fun UserTagTab(
     modifier: Modifier,

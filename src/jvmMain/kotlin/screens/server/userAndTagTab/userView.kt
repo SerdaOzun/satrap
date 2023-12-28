@@ -11,7 +11,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
@@ -19,8 +18,8 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import domain.User
-import screens.serverList.ServerEvent
 import screens.serverList.ServerViewModel
+import screens.serverList.util.ServerEvent
 import screens.userManagement.UserEvent
 import screens.userManagement.UserViewModel
 import ui.components.ColorRow
@@ -31,7 +30,6 @@ import ui.theme.LightGreen
 import ui.theme.Turquoise
 import ui.theme.spacing
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun UserCreationList(serverVM: ServerViewModel, userVM: UserViewModel) {
     Column(
@@ -81,7 +79,7 @@ fun UserCreationList(serverVM: ServerViewModel, userVM: UserViewModel) {
                             if (event.key == Key.Enter) {
                                 if (newUsername.isNotEmpty()) {
                                     userVM.onEvent(
-                                        UserEvent.InsertUser(User(null, null, newUsername, "", false, true, ""))
+                                        UserEvent.InsertUser(User(newUsername))
                                     )
                                     newUsername = ""
                                 }
@@ -92,7 +90,7 @@ fun UserCreationList(serverVM: ServerViewModel, userVM: UserViewModel) {
 
                 TerminalTextButton(modifier = Modifier.weight(0.3f).terminalTheme().fillMaxSize(), onClick = {
                     if (newUsername.isNotEmpty()) {
-                        userVM.onEvent(UserEvent.InsertUser(User(null, null, newUsername, "", false, true, "")))
+                        userVM.onEvent(UserEvent.InsertUser(User(newUsername)))
                         newUsername = ""
                     }
                 }) {
@@ -175,7 +173,7 @@ private fun userItem(
                     selected = userIsDefault,
                     onClick = {
                         userVM.onEvent(UserEvent.SelectUser(user))
-                        serverVM.onEvent(ServerEvent.UpdateDefaultUser(user.userId!!))
+                        serverVM.onEvent(ServerEvent.UpdateDefaultUser(user.userId))
                     }
                 )
                 .background(if (userIsDefault) MaterialTheme.colors.Turquoise else MaterialTheme.colors.background),

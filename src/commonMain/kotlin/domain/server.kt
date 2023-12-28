@@ -1,8 +1,6 @@
 package domain
 
 import kotlinx.coroutines.flow.Flow
-import satrapinsatrap.GetAllData
-import satrapinsatrap.GetServerCompleteById
 import satrapinsatrap.ServerEntity
 
 /**
@@ -11,12 +9,10 @@ import satrapinsatrap.ServerEntity
  * @see ServerComplete for additional data bundled with the Server such as users and tags
  */
 interface ServerDataSource {
-    suspend fun insertServer(server: Server): Long?
-    suspend fun getServerById(id: Long): Server?
-    suspend fun getServerCompleteById(id: Long): ServerComplete?
-    fun getAllServerComplete(): Flow<List<ServerComplete>>
-    fun getAllServer(): Flow<List<Server>>
-    suspend fun deleteServerById(id: Long)
+    suspend fun insert(server: Server): Long?
+    suspend fun get(id: Long): Server?
+    fun getServer(): Flow<List<Server>>
+    suspend fun delete(id: Long)
     suspend fun getLastInsertedId(): Long?
 }
 
@@ -30,14 +26,23 @@ interface ServerDataSource {
  * @param syncServer should the server be sync with remote
  */
 data class Server(
-    val serverId: Long?,
+    val serverId: Long,
     var serverUrl: String,
     var title: String,
-    var organization: String?,
+    var organization: String,
     var description: String,
     var syncServer: Boolean,
     var defaultUserId: Long?
-)
+) {
+    constructor(
+        serverUrl: String,
+        title: String,
+        organization: String,
+        description: String,
+        syncServer: Boolean,
+        defaultUserId: Long?
+    ) : this(-1L, serverUrl, title, organization, description, syncServer, defaultUserId)
+}
 
 /**
  * Includes the Server with additional data
@@ -57,83 +62,3 @@ fun ServerEntity.toServer() = Server(
     syncServer,
     defaultUserId
 )
-
-fun List<GetAllData>.toServersComplete(): List<ServerComplete> {
-    val tagServerMap = this.groupBy { it.tag_id }.mapValues { (_, group) -> group.map { it.server_id } }
-    val tags = this.filter { it.tag_id != null }.map {
-        Tag(
-            tagId = it.tag_id,
-            serverIds = tagServerMap[it.tag_id],
-            tag = it.tag!!,
-            syncTag = it.syncTag!!
-        )
-    }.distinct()
-    val userServersMap = this.groupBy { it.user_id }.mapValues { (_, group) -> group.map { it.server_id } }
-    val user = this.filter { it.user_id != null }.map {
-        User(
-            userId = it.user_id,
-            serverIds = userServersMap[it.user_id],
-            username = it.username!!,
-            role = it.role!!,
-            defaultUser = it.defaultUser!!,
-            syncUser = it.syncUser!!,
-            userLevelDescription = it.userLevelDescription!!
-        )
-    }.distinct()
-
-    return this.map {
-        ServerComplete(
-            Server(
-                serverId = it.server_id,
-                serverUrl = it.server_url,
-                title = it.title,
-                organization = it.organization,
-                description = it.description,
-                syncServer = it.syncServer,
-                defaultUserId = it.defaultUserId
-            ),
-            tags.filter { tag -> tag.serverIds!!.contains(it.server_id) },
-            user.filter { user -> user.serverIds!!.contains(it.server_id) }
-        )
-    }
-}
-
-fun List<GetServerCompleteById>.toServerComplete(): List<ServerComplete> {
-    val tagServerMap = this.groupBy { it.tag_id }.mapValues { (_, group) -> group.map { it.server_id } }
-    val tags = this.filter { it.tag_id != null }.map {
-        Tag(
-            tagId = it.tag_id,
-            serverIds = tagServerMap[it.tag_id],
-            tag = it.tag!!,
-            syncTag = it.syncTag!!
-        )
-    }.distinct()
-    val userServersMap = this.groupBy { it.user_id }.mapValues { (_, group) -> group.map { it.server_id } }
-    val user = this.filter { it.user_id != null }.map {
-        User(
-            userId = it.user_id,
-            serverIds = userServersMap[it.user_id],
-            username = it.username!!,
-            role = it.role!!,
-            defaultUser = it.defaultUser!!,
-            syncUser = it.syncUser!!,
-            userLevelDescription = it.userLevelDescription!!
-        )
-    }.distinct()
-
-    return this.map {
-        ServerComplete(
-            Server(
-                serverId = it.server_id,
-                serverUrl = it.server_url,
-                title = it.title,
-                organization = it.organization,
-                description = it.description,
-                syncServer = it.syncServer,
-                defaultUserId = it.defaultUserId
-            ),
-            tags.filter { tag -> tag.serverIds!!.contains(it.server_id) },
-            user.filter { user -> user.serverIds!!.contains(it.server_id) }
-        )
-    }
-}

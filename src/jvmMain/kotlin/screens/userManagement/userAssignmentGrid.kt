@@ -51,7 +51,7 @@ private fun ServerSelection(user: User, userVm: UserViewModel, serverVm: ServerV
             //Selection
             ColorRow(
                 modifier = Modifier.weight(0.10f).fillMaxSize()
-                    .clickable { onSelect(server.serverId!!) }
+                    .clickable { onSelect(server.serverId) }
                     .background(if (hasSelectedUserAssigned) MaterialTheme.colors.LightGreen else MaterialTheme.colors.background),
                 horizontal = Arrangement.Center,
                 withBorder = true
@@ -63,7 +63,7 @@ private fun ServerSelection(user: User, userVm: UserViewModel, serverVm: ServerV
                 modifier = Modifier.weight(0.55f).fillMaxSize()
                     .selectable(
                         selected = hasSelectedUserAssigned,
-                        onClick = { onSelect(server.serverId!!) }
+                        onClick = { onSelect(server.serverId) }
                     )
                     .background(MaterialTheme.colors.onBackground),
                 verticalAlignment = Alignment.CenterVertically

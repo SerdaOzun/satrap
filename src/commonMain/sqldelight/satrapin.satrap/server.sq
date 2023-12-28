@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS serverEntity (
   server_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   server_url TEXT NOT NULL,
   title TEXT NOT NULL,
-  organization Text,
+  organization Text NOT NULL,
   description TEXT NOT NULL,
   syncServer INTEGER AS Boolean NOT NULL DEFAULT 0, -- sync with remote
   defaultUserId INTEGER
@@ -30,20 +30,3 @@ WHERE server_id = :id;
 deleteServerById:
 DELETE FROM serverEntity
 WHERE server_id = :id;
-
-getAllData:
-SELECT server.*, tag.*, user.*
-FROM serverEntity AS server
-LEFT JOIN TagServer AS tagserver ON server.server_id = tagserver.server_id
-LEFT JOIN tagEntity AS tag ON tagserver.tag_id = tag.tag_id
-LEFT JOIN UserServer AS userserver ON server.server_id = userserver.server_id
-LEFT JOIN userEntity AS user ON userserver.user_id = user.user_id;
-
-getServerCompleteById:
-SELECT server.*, tag.*, user.*
-FROM serverEntity AS server
-LEFT JOIN TagServer AS tagserver ON server.server_id = tagserver.server_id
-LEFT JOIN tagEntity AS tag ON tagserver.tag_id = tag.tag_id
-LEFT JOIN UserServer AS userserver ON server.server_id = userserver.server_id
-LEFT JOIN userEntity AS user ON userserver.user_id = user.user_id
-WHERE server.server_id = :serverId;

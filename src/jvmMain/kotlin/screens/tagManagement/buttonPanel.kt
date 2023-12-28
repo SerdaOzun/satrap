@@ -17,7 +17,7 @@ import ui.theme.spacing
 fun TagMgmtButtonPanel(modifier: Modifier, tags: List<Tag>, selectedTagId: Long, tagVm: TagViewModel) {
     var dialogType by remember { mutableStateOf(DialogType.CREATE) }
     var showDialog by remember { mutableStateOf(false) }
-    val selectedTag = tags.firstOrNull { it.tagId == selectedTagId  }
+    val selectedTag = tags.firstOrNull { it.tagId == selectedTagId }
 
 
     Row(modifier) {
@@ -52,12 +52,14 @@ fun TagMgmtButtonPanel(modifier: Modifier, tags: List<Tag>, selectedTagId: Long,
         }
     }
 
-    tagManagementDialogs(
-        showDialog = showDialog,
-        dialogType = dialogType,
-        tagVm = tagVm,
-        selectedTag = selectedTag,
-        onShowDialog = { showDialog = it }
-    )
+    if (selectedTag != null) {
+        tagManagementDialogs(
+            showDialog = showDialog,
+            dialogType = dialogType,
+            tagVm = tagVm,
+            selectedTag = selectedTag,
+            onShowDialog = { showDialog = it }
+        )
+    }
 
 }

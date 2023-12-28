@@ -11,7 +11,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
@@ -28,7 +27,6 @@ import ui.components.terminalTheme
 import ui.theme.LightGreen
 import ui.theme.spacing
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TagTextfieldList(
     tagVM: TagViewModel
@@ -81,7 +79,7 @@ fun TagTextfieldList(
                         if (event.key == Key.Enter) {
                             if (newTagname.isNotEmpty()) {
                                 tagVM.onEvent(
-                                    TagEvent.InsertTag(Tag(null, null, newTagname, syncTag = true))
+                                    TagEvent.InsertTag(Tag(newTagname, syncTag = true))
                                 )
                                 newTagname = ""
                             }
@@ -92,7 +90,7 @@ fun TagTextfieldList(
 
             TerminalTextButton(modifier = Modifier.weight(0.3f).terminalTheme().fillMaxSize(), onClick = {
                 if (newTagname.isNotEmpty()) {
-                    tagVM.onEvent(TagEvent.InsertTag(Tag(null, null, newTagname, syncTag = true)))
+                    tagVM.onEvent(TagEvent.InsertTag(Tag(newTagname, syncTag = true)))
                     newTagname = ""
                 }
             }) {
@@ -103,7 +101,6 @@ fun TagTextfieldList(
 }
 
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun tagItem(tag: Tag, tagVM: TagViewModel) {
     val tagIsSelected = tag.tagId in tagVM.selectedTags.map { it.tagId }

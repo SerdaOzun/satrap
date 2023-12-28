@@ -12,7 +12,7 @@ fun tagManagementDialogs(
     showDialog: Boolean,
     dialogType: DialogType,
     tagVm: TagViewModel,
-    selectedTag: Tag?,
+    selectedTag: Tag,
     onShowDialog: (Boolean) -> Unit
 ) {
     if (showDialog) {
@@ -45,7 +45,7 @@ fun tagManagementDialogs(
                         TerminalTextField(label = "Enter the new name...", value = newTag, onValueChange = { newTag = it })
                     },
                     onConfirm = {
-                        tagVm.onEvent(TagEvent.InsertTag(selectedTag!!.copy(tag = newTag)))
+                        tagVm.onEvent(TagEvent.InsertTag(selectedTag.copy(tag = newTag)))
                         newTag = ""
                         onShowDialog(false)
                     },
@@ -61,7 +61,7 @@ fun tagManagementDialogs(
                     message = "Are you sure you want to delete the tag?",
                     confirmButtonLabel = "Delete",
                     onConfirm = {
-                        tagVm.onEvent(TagEvent.DeleteTag(selectedTag!!))
+                        tagVm.onEvent(TagEvent.DeleteTag(selectedTag))
                         onShowDialog(false)
                     },
                     confirmButtonColor = MaterialTheme.colors.error,

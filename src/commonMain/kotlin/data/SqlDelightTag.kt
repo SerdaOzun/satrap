@@ -3,47 +3,56 @@ package data
 import app.cash.sqldelight.coroutines.asFlow
 import domain.Tag
 import domain.TagDataSource
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import satrapco.satrap.Database
 import satrapinsatrap.GetAllTags
 import satrapinsatrap.GetTagById
 import satrapinsatrap.GetTagsByServerId
 
-class SqlDelightTag(db: Database) : TagDataSource {
+class SqlDelightTag(
+    db: Database,
+    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
+) : TagDataSource {
 
     private val queries = db.tagQueries
     private val tagServerQueries = db.tagServerQueries
 
-    override suspend fun insertTag(tag: Tag): Long? {
-        val insertedTagId: Long? = queries.transactionWithResult {
+    override suspend fun insert(tag: Tag): Long? {
+        return queries.transactionWithResult {
             queries.insertTag(
-                tag_id = tag.tagId,
+                tag_id = if (tag.tagId < 0) null else tag.tagId,
                 tag = tag.tag,
                 syncTag = tag.syncTag
             )
             queries.getLastInsertedId().executeAsOneOrNull()
+        }?.let { insertedTagId ->
+            tag.serverIds.forEach { serverId ->
+                withContext(Dispatchers.IO) {
+                    addTagToServer(insertedTagId, serverId)
+                }
+            }
+            insertedTagId
         }
-        tag.serverIds?.forEach { serverId ->
-            addTagToServer(insertedTagId!!, serverId)
-        }
-        return insertedTagId
     }
 
-    override suspend fun getTagById(id: Long): Tag {
+    override suspend fun get(id: Long): Tag {
         return queries.getTagById(id).executeAsList().toTag().first()
     }
 
-    override fun getAllTags(): Flow<List<Tag>> {
+    override fun getAll(): Flow<List<Tag>> {
         return queries.getAllTags().asFlow().map { query -> query.executeAsList().toTag() }
     }
 
-    override suspend fun getTagsByServerId(serverId: Long): List<Tag> {
+    override suspend fun getAllByServerId(serverId: Long): List<Tag> {
         return queries.getTagsByServerId(serverId).executeAsList().toTag()
     }
 
-    override suspend fun deleteTagById(id: Long) {
-        queries.deleteTagById(id)
+    override suspend fun delete(id: Long) {
+        withContext(coroutineDispatcher) { queries.deleteTagById(id) }
     }
 
     override suspend fun getLastInsertedId(): Long? {
@@ -51,11 +60,11 @@ class SqlDelightTag(db: Database) : TagDataSource {
     }
 
     override suspend fun addTagToServer(tagId: Long, serverId: Long) {
-        tagServerQueries.insertRelation(tag_id = tagId, server_id = serverId)
+        withContext(coroutineDispatcher) { tagServerQueries.insertRelation(tag_id = tagId, server_id = serverId) }
     }
 
     override suspend fun removeTagFromServer(tagId: Long, serverId: Long) {
-        tagServerQueries.deleteRelation(tagId = tagId, serverId = serverId)
+        withContext(coroutineDispatcher) { tagServerQueries.deleteRelation(tagId = tagId, serverId = serverId) }
     }
 }
 
@@ -67,7 +76,7 @@ private fun List<GetTagById>.toTag(): List<Tag> {
     return this.distinctBy { it.tag_id }.map {
         Tag(
             it.tag_id,
-            tagServersMap[it.tag_id],
+            tagServersMap[it.tag_id] ?: emptyList(),
             it.tag,
             it.syncTag
         )
@@ -81,7 +90,7 @@ private fun List<GetAllTags>.toTag(): List<Tag> {
     return this.distinctBy { it.tag_id }.map {
         Tag(
             it.tag_id,
-            tagServersMap[it.tag_id],
+            tagServersMap[it.tag_id] ?: emptyList(),
             it.tag,
             it.syncTag
         )
@@ -95,7 +104,7 @@ private fun List<GetTagsByServerId>.toTag(): List<Tag> {
     return this.distinctBy { it.tag_id }.map {
         Tag(
             it.tag_id,
-            tagServersMap[it.tag_id],
+            tagServersMap[it.tag_id] ?: emptyList(),
             it.tag,
             it.syncTag
         )

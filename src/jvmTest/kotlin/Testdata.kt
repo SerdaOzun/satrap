@@ -4,7 +4,6 @@ import domain.User
 
 object Testdata {
     val server = Server(
-        serverId = null,
         serverUrl = "my-server-url",
         title = "server-title",
         organization = "Testorg",
@@ -13,8 +12,6 @@ object Testdata {
         defaultUserId = 1L
     )
     val userWithoutServerId = User(
-        null,
-        null,
         username = "User without server Id",
         role = "Admin",
         defaultUser = true,
@@ -22,8 +19,6 @@ object Testdata {
         userLevelDescription = "All privileges"
     )
     val tagWithoutServerId = Tag(
-        tagId = null,
-        serverIds = emptyList(),
         tag = "Tag without serverId",
         syncTag = true
     )

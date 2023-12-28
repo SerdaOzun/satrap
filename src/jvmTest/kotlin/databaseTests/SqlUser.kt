@@ -35,11 +35,10 @@ class SqlUser : DatabaseTestCase() {
     fun `Insert user`() {
         runBlocking {
             withClue("Insert a server and a user with a server Id into the database. The database should contain one user") {
-                serverDataSource.insertServer(server)
+                serverDataSource.insert(server)
                 val serverId = serverDataSource.getLastInsertedId()
 
                 userWithServerId = User(
-                    null,
                     listOf(serverId!!),
                     username = "User with server Id",
                     role = "Admin",
@@ -56,10 +55,10 @@ class SqlUser : DatabaseTestCase() {
     @Test(dependsOnMethods = ["Insert user"])
     fun `Get users`() {
         runBlocking {
-            userDataSource.getUsersByServerid(userWithServerId.serverIds!!.first()).size shouldBe 1
+            userDataSource.getUsersByServerid(userWithServerId.serverIds.first()).size shouldBe 1
 
-            userDataSource.getAllUser().first().first { it.serverIds != null }.let {
-                it.serverIds shouldContainExactly userWithServerId.serverIds!!
+            userDataSource.getAllUser().first().first { it.serverIds.isNotEmpty() }.let {
+                it.serverIds shouldContainExactly userWithServerId.serverIds
                 it.username shouldBe userWithServerId.username
                 it.role shouldBe userWithServerId.role
                 it.defaultUser shouldBe userWithServerId.defaultUser
@@ -73,7 +72,7 @@ class SqlUser : DatabaseTestCase() {
     fun `Delete user`() {
         runBlocking {
             userDataSource.getAllUser().first().forEach {
-                userDataSource.deleteUserById(it.userId!!)
+                userDataSource.deleteUserById(it.userId)
             }
             userDataSource.getAllUser().first().shouldBeEmpty()
         }

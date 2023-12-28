@@ -3,6 +3,7 @@ import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import satrapco.satrap.Database
 import util.OS
 import util.currentOS
+import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -10,7 +11,9 @@ import java.nio.file.Paths
 actual class DriverFactory {
     actual fun createDriver(): SqlDriver {
         val driver: SqlDriver = JdbcSqliteDriver("jdbc:sqlite:${getDatabaseDirectory()}")
-        Database.Schema.create(driver)
+        if (!File("${getDatabaseDirectory()}").exists()) {
+            Database.Schema.create(driver)
+        }
         return driver
     }
 }
@@ -39,7 +42,7 @@ private fun getDatabaseDirectory(): Path {
         }
     }
 
-    if(!Files.exists(path)) {
+    if (!Files.exists(path)) {
         Files.createDirectories(path)
     }
 

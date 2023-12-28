@@ -1,4 +1,4 @@
-package screens.serverList
+package screens.serverList.util
 
 enum class ServerHeader(val label: String, val weight: Float, val headerWeight: Float = weight) {
     RUN("", 0.05f ),

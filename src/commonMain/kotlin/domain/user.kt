@@ -18,8 +18,8 @@ interface UserDataSource {
 }
 
 data class User(
-    val userId: Long?,
-    val serverIds: List<Long>?,
+    val userId: Long,
+    val serverIds: List<Long>,
     val username: String,
     val role: String,
     val defaultUser: Boolean,
@@ -30,6 +30,20 @@ data class User(
         return username
     }
 
-    constructor(username: String) : this(null, emptyList(), username, "", false, false, "")
-
+    constructor(username: String) : this(-1L, emptyList(), username, "", false, false, "")
+    constructor(
+        username: String,
+        role: String,
+        defaultUser: Boolean,
+        syncUser: Boolean,
+        userLevelDescription: String
+    ) : this(-1L, emptyList(), username, role, defaultUser, syncUser, userLevelDescription)
+    constructor(
+        serverIds: List<Long>,
+        username: String,
+        role: String,
+        defaultUser: Boolean,
+        syncUser: Boolean,
+        userLevelDescription: String
+    ) : this(-1L, serverIds, username, role, defaultUser, syncUser, userLevelDescription)
 }

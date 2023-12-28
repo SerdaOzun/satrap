@@ -1,0 +1,16 @@
+CREATE VIEW servercomplete AS
+SELECT server.*, tag.*, user.*
+FROM serverEntity AS server
+LEFT JOIN TagServer AS tagserver ON server.server_id = tagserver.server_id
+LEFT JOIN tagEntity AS tag ON tagserver.tag_id = tag.tag_id
+LEFT JOIN UserServer AS userserver ON server.server_id = userserver.server_id
+LEFT JOIN userEntity AS user ON userserver.user_id = user.user_id;
+
+getAllServerComplete:
+SELECT *
+FROM servercomplete;
+
+getServerCompleteById:
+SELECT *
+FROM servercomplete
+WHERE servercomplete.server_id = :serverId;

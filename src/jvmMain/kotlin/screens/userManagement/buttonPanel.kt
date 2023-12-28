@@ -18,7 +18,7 @@ fun UserMgmtButtonPanel(modifier: Modifier, users: List<User>, selectedUserId: L
     var dialogType by remember { mutableStateOf(DialogType.CREATE) }
     var showDialog by remember { mutableStateOf(false) }
     val userIsSelected = users.map { it.userId }.contains(selectedUserId)
-    val selectedUser = users.firstOrNull { it.userId == selectedUserId  }
+    val selectedUser = users.firstOrNull { it.userId == selectedUserId }
 
 
     Row(modifier) {
@@ -53,12 +53,13 @@ fun UserMgmtButtonPanel(modifier: Modifier, users: List<User>, selectedUserId: L
         }
     }
 
-    userManagementDialogs(
-        showDialog = showDialog,
-        dialogType = dialogType,
-        userVm = userVm,
-        selectedUser = selectedUser,
-        onShowDialog = { showDialog = it }
-    )
-
+    if (selectedUser != null) {
+        userManagementDialogs(
+            showDialog = showDialog,
+            dialogType = dialogType,
+            userVm = userVm,
+            selectedUser = selectedUser,
+            onShowDialog = { showDialog = it }
+        )
+    }
 }

@@ -6,7 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.*
@@ -64,11 +64,11 @@ fun ServerGrid(
                         )
                     }
                 } else {
-                    items(
+                    itemsIndexed(
                         items = servers.filterSearch(serverVM, userVM, tagVM)
                             .sortedWith(getServerCompleteComparator(serverVM.serverNameSortingAscending)),
-                        key = { s -> s.server.serverId!! }
-                    ) {
+                        key = { index, s -> s.server.serverId ?: index }
+                    ) { _, it ->
                         ServerItem(it, selectedId) { s ->
                             selectedId = s
                         }
