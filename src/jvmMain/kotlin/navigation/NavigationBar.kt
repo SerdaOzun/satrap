@@ -12,7 +12,6 @@ import androidx.compose.ui.unit.sp
 import moe.tlaster.precompose.navigation.Navigator
 import ui.components.ColorColumn
 import ui.components.ColorRowContent
-import ui.theme.LightBlue
 import ui.theme.spacing
 
 @Composable
@@ -47,7 +46,7 @@ fun NavigationBar(modifier: Modifier, navigator: Navigator) {
                     ColorRowContent(
                         modifier = Modifier.fillMaxWidth().clickable { navigator.navigate(it.name) }
                     ) {
-                        Text(it.label, color = MaterialTheme.colors.LightBlue, fontSize = 14.sp)
+                        Text(it.label, color = MaterialTheme.colors.background, fontSize = 14.sp)
                     }
                 }
             }
@@ -61,12 +60,10 @@ fun NavigationBar(modifier: Modifier, navigator: Navigator) {
                         ColorRowContent(
                             modifier = Modifier.fillMaxWidth().clickable { navigator.navigate(it.name) }
                         ) {
-                            Text(it.label, color = MaterialTheme.colors.LightBlue, fontSize = 14.sp)
+                            Text(it.label, color = MaterialTheme.colors.background, fontSize = 14.sp)
                         }
                     }
             }
-
-
         }
 
         ColorColumn(

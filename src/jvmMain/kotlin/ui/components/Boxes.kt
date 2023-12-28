@@ -11,13 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import ui.theme.LightBlue
 import ui.theme.spacing
 
 @Composable
 fun ColorColumn(
     modifier: Modifier = Modifier.fillMaxWidth(),
-    backgroundColor: Color = MaterialTheme.colors.LightBlue,
+    backgroundColor: Color = MaterialTheme.colors.background,
     headline: String = "",
     alignment: Arrangement.Vertical = Arrangement.Top,
     content: @Composable () -> Unit

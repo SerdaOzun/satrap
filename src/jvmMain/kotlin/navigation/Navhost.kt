@@ -20,7 +20,7 @@ import ui.theme.spacing
 @Composable
 fun SatrapNavHost(navigator: Navigator) {
     NavHost(
-        modifier = Modifier.padding(MaterialTheme.spacing.medium),
+        modifier = Modifier.padding(MaterialTheme.spacing.extraSmall),
         navigator = navigator,
         initialRoute = Screen.ServerListScreen.name
     ) {
