@@ -7,6 +7,8 @@ CREATE TABLE IF NOT EXISTS serverEntity (
   organization Text NOT NULL,
   description TEXT NOT NULL,
   syncServer INTEGER AS Boolean NOT NULL DEFAULT 0, -- sync with remote
+  showSSHAgent INTEGER AS Boolean NOT NULL DEFAULT 0,
+  isSSHAgentDefault INTEGER AS Boolean NOT NULL DEFAULT 0,
   defaultUserId INTEGER
 );
 
@@ -15,8 +17,8 @@ SELECT last_insert_rowid();
 
 insertServer:
 INSERT OR REPLACE
-INTO serverEntity(server_id, server_url, title, organization, description, syncServer, defaultUserId)
-VALUES (?, ?, ?, ?, ?,?, ?);
+INTO serverEntity(server_id, server_url, title, organization, description, syncServer, showSSHAgent, isSSHAgentDefault, defaultUserId)
+VALUES (?, ?, ?, ?, ?,?, ?, ?,?);
 
 getAllServers:
 SELECT *

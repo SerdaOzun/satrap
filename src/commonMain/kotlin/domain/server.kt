@@ -32,6 +32,8 @@ data class Server(
     var organization: String,
     var description: String,
     var syncServer: Boolean,
+    var showSSHAgent: Boolean,
+    var isSSHAgentDefault: Boolean,
     var defaultUserId: Long?
 ) {
     constructor(
@@ -41,7 +43,7 @@ data class Server(
         description: String,
         syncServer: Boolean,
         defaultUserId: Long?
-    ) : this(-1L, serverUrl, title, organization, description, syncServer, defaultUserId)
+    ) : this(-1L, serverUrl, title, organization, description, syncServer, true, true, defaultUserId)
 }
 
 /**
@@ -54,11 +56,13 @@ data class ServerComplete(
 )
 
 fun ServerEntity.toServer() = Server(
-    server_id,
-    server_url,
-    title,
-    organization,
-    description,
-    syncServer,
-    defaultUserId
+    serverId = server_id,
+    serverUrl = server_url,
+    title = title,
+    organization = organization,
+    description = description,
+    syncServer = syncServer,
+    showSSHAgent = showSSHAgent,
+    isSSHAgentDefault = isSSHAgentDefault,
+    defaultUserId = defaultUserId
 )

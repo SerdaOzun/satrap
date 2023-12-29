@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import domain.ServerComplete
 import domain.User
 import screens.serverList.util.ServerHeader
-import ui.components.CarbonCombobox
+import ui.components.TerminalCombobox
 import util.runCommand
 
 
@@ -47,7 +47,8 @@ fun ServerItem(
 
         //Run Button
         TableIconButton(modifier = Modifier.weight(ServerHeader.RUN.weight)) {
-            if (selectedUser == null) {
+            //If the selectedUser is empty or its id is < 0 (meaning SSH Agent user) do not specify a username
+            if (selectedUser == null || selectedUser?.userId!! < 0) {
                 runCommand("ssh ${serverComplete.server.serverUrl}")
             } else {
                 runCommand("ssh ${selectedUser?.username}@${serverComplete.server.serverUrl}")
@@ -59,10 +60,14 @@ fun ServerItem(
             modifier = Modifier.weight(ServerHeader.SERVER.weight)
         )
         //User Selection
-        CarbonCombobox(
+        val userOptions = serverComplete.users.toMutableList()
+        if (serverComplete.server.showSSHAgent) {
+            userOptions += User("SSH Agent")
+        }
+        TerminalCombobox(
             modifier = Modifier.weight(ServerHeader.USER.weight).fillMaxHeight(),
             selectedUser,
-            serverComplete.users
+            userOptions
         ) { u -> selectedUser = u }
         //Description
         TableCell(

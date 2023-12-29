@@ -57,7 +57,7 @@ class ServerViewModel(
                 is ServerEvent.InitializeServer -> initializeServer(event.id)
                 is ServerEvent.InsertServer -> insertedServerId = serverDataSource.insert(event.server)
                 is ServerEvent.DeleteServer -> serverDataSource.delete(event.serverId)
-                is ServerEvent.UpdateDefaultUser -> server = server.copy(defaultUserId = event.userId)
+                is ServerEvent.UpdateDefaultUser -> server = server.copy(defaultUserId = event.userId, isSSHAgentDefault = false)
 
             }
         }

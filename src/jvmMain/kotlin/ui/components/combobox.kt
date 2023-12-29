@@ -79,7 +79,7 @@ fun <T> CarbonMultiselectCombobox(
 }
 
 @Composable
-fun <T> CarbonCombobox(modifier: Modifier, selectedOption: T?, options: List<T>, onClick: (T) -> Unit) {
+fun <T> TerminalCombobox(modifier: Modifier, selectedOption: T?, options: List<T>, onClick: (T) -> Unit) {
     var size by remember { mutableStateOf(IntSize.Zero) }
     var expanded by remember { mutableStateOf(false) }
     Row(
@@ -89,7 +89,7 @@ fun <T> CarbonCombobox(modifier: Modifier, selectedOption: T?, options: List<T>,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            selectedOption?.toString() ?: "SSH Agent",
+            selectedOption?.toString() ?: options.firstOrNull()?.toString() ?: "SSH Agent",
             modifier = Modifier.weight(0.9f).padding(start = 10.dp)
         )
         Icon(

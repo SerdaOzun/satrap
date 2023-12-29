@@ -6,7 +6,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import config
-import ui.components.CarbonCombobox
+import ui.components.TerminalCombobox
 import ui.components.TerminalTextButton
 import ui.components.TerminalTextField
 import ui.components.terminalTheme
@@ -19,7 +19,7 @@ fun SettingsScreen() {
     Column(modifier = Modifier.padding(MaterialTheme.spacing.medium)) {
 
 
-        CarbonCombobox(
+        TerminalCombobox(
             modifier = Modifier.width(IntrinsicSize.Min).padding(bottom = MaterialTheme.spacing.medium),
             config.terminal.label,
             Terminal.entries.filter { it.os == currentOS }.map { it.label }

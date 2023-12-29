@@ -56,6 +56,8 @@ private fun List<Servercomplete>.toServerComplete(): List<ServerComplete> {
                 organization = it.organization,
                 description = it.description,
                 syncServer = it.syncServer,
+                showSSHAgent = it.showSSHAgent,
+                isSSHAgentDefault = it.isSSHAgentDefault,
                 defaultUserId = it.defaultUserId
             ),
             tags.filter { tag -> tag.serverIds.contains(it.server_id) },

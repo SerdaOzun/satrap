@@ -19,6 +19,7 @@ import screens.tagManagement.TagEvent
 import screens.tagManagement.TagViewModel
 import screens.userManagement.UserEvent
 import screens.userManagement.UserViewModel
+import ui.components.TerminalCheckbox
 import ui.components.TerminalTextButton
 import ui.components.TerminalTextField
 import ui.components.terminalTheme
@@ -87,9 +88,42 @@ internal fun ServerView(
             LabelAndField(
                 Modifier.fillMaxWidth().padding(top = MaterialTheme.spacing.small),
                 "Description",
-                serverVm.server.description
+                serverVm.server.description,
+                maxLines = 5
             ) {
                 serverVm.server = serverVm.server.copy(description = it)
+            }
+
+            Row(
+                Modifier.padding(bottom = MaterialTheme.spacing.small, top = MaterialTheme.spacing.small).fillMaxWidth()
+                    .border(width = 3.dp, color = MaterialTheme.colors.onBackground)
+
+            ) {
+                Column {
+                    Text(
+                        "SSH Agent",
+                        color = MaterialTheme.colors.onBackground,
+                        modifier = Modifier.padding(MaterialTheme.spacing.small),
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        TerminalCheckbox(
+                            serverVm.server.showSSHAgent,
+                            onCheckedChange = { serverVm.server = serverVm.server.copy(showSSHAgent = it) })
+                        Text("Show SSH Agent as selectable option")
+                    }
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        TerminalCheckbox(
+                            serverVm.server.isSSHAgentDefault,
+                            onCheckedChange = {
+                                //Set defaultUserId to null, as this the SSH Agent is a special user, that isn't part of the user list
+                                serverVm.server = serverVm.server.copy(isSSHAgentDefault = it, defaultUserId = null)
+                            })
+                        Text("Make the SSH Agent the default user")
+                    }
+                }
             }
         }
 
@@ -101,7 +135,6 @@ internal fun ServerView(
             tagVm,
             navigator
         )
-
     }
 }
 
@@ -114,6 +147,7 @@ private fun LabelAndField(
     label: String,
     value: String,
     errorHandling: Boolean = false,
+    maxLines: Int = 1,
     isError: (Boolean) -> Unit = {},
     onValueChange: (String) -> Unit
 ) {
@@ -137,6 +171,7 @@ private fun LabelAndField(
             modifier = Modifier.weight(0.7f).fillMaxSize(),
             value = value,
             onValueChange = onValueChange,
+            maxLines = maxLines,
             isError = if (errorHandling) {
                 isError(value.isEmpty())
                 value.isEmpty()

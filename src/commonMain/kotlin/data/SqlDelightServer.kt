@@ -27,6 +27,8 @@ class SqlDelightServer(
                 organization,
                 description,
                 syncServer,
+                showSSHAgent,
+                isSSHAgentDefault,
                 defaultUserId
             )
             queries.getLastInsertedId().executeAsOneOrNull()
