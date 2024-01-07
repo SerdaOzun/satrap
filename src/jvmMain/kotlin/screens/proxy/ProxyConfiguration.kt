@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import domain.JumpServer
 import domain.Proxy
@@ -66,6 +67,20 @@ fun ProxyConfiguration(
                         modifier = Modifier.fillMaxSize().padding(end = MaterialTheme.spacing.medium),
                         state
                     ) {
+                        item {
+                            //Headers
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                TableCell("#", modifier = Modifier.weight(0.15f), fontWeight = FontWeight.Bold)
+                                TableCell("User", modifier = Modifier.weight(0.35f), fontWeight = FontWeight.Bold)
+                                TableCell("Server", modifier = Modifier.weight(0.35f), fontWeight = FontWeight.Bold)
+                                TableCell("Port", modifier = Modifier.weight(0.10f), fontWeight = FontWeight.Bold)
+                                TableCell("", modifier = Modifier.weight(0.05f), fontWeight = FontWeight.Bold)
+                            }
+                        }
+
                         items(proxy.jumpserverList.sortedBy { it.order }) {
                             JumpServerItem(
                                 jumpServer = it,

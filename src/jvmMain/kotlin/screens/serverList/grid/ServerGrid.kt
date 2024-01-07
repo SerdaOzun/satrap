@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import moe.tlaster.precompose.navigation.Navigator
 import screens.serverList.ServerViewModel
 import screens.tagManagement.TagViewModel
@@ -95,8 +96,8 @@ fun ServerGrid(
 }
 
 @Composable
-fun RowScope.TableCell(text: String, textColor: Color = MaterialTheme.colors.onPrimary, modifier: Modifier = Modifier) {
-    Text(text = text, color = textColor, modifier = modifier.padding(MaterialTheme.spacing.small))
+fun RowScope.TableCell(text: String, textColor: Color = MaterialTheme.colors.onPrimary, modifier: Modifier = Modifier, fontWeight: FontWeight = FontWeight.Normal) {
+    Text(text = text, color = textColor, modifier = modifier.padding(MaterialTheme.spacing.small), fontWeight = fontWeight)
 }
 
 @Composable

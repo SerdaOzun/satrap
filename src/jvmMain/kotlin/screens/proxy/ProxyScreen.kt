@@ -25,6 +25,10 @@ fun ProxyScreen(
     val proxies by proxyVM.proxies.collectAsState(initial = emptyList())
     var selectedProxyId by remember { mutableStateOf(-1L) }
 
+    LaunchedEffect(Unit) {
+        selectedProxyId = proxies.firstOrNull()?.id ?: -1L
+    }
+
     Column(modifier = Modifier.fillMaxSize()) {
         Row(modifier = Modifier.weight(0.9f)) {
             //Left side - proxy name list
