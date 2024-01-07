@@ -3,9 +3,16 @@ package screens.server
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -13,13 +20,14 @@ import androidx.compose.ui.unit.dp
 import errorMessage
 import moe.tlaster.precompose.navigation.Navigator
 import navigation.Screen
+import screens.proxy.ProxyViewModel
 import screens.serverList.ServerViewModel
 import screens.serverList.util.ServerEvent
 import screens.tagManagement.TagEvent
 import screens.tagManagement.TagViewModel
 import screens.userManagement.UserEvent
 import screens.userManagement.UserViewModel
-import ui.components.TerminalCheckbox
+import ui.components.TerminalCombobox
 import ui.components.TerminalTextButton
 import ui.components.TerminalTextField
 import ui.components.terminalTheme
@@ -34,8 +42,15 @@ internal fun ServerView(
     navigator: Navigator,
     serverVm: ServerViewModel,
     userVm: UserViewModel,
-    tagVm: TagViewModel
+    tagVm: TagViewModel,
+    proxyVm: ProxyViewModel
 ) {
+
+    val proxies by proxyVm.proxies.collectAsState(emptyList())
+    LaunchedEffect(key1 = serverVm.server.proxyId, key2 = proxyVm.proxy) {
+        //Get proxy if exists
+        serverVm.server.proxyId?.let { id -> proxyVm.updateSelectedProxy(id) }
+    }
 
     Column(
         modifier = modifier.fillMaxSize()
@@ -67,7 +82,8 @@ internal fun ServerView(
                 modifier = Modifier.fillMaxWidth(),
                 label = "URL",
                 value = serverVm.server.serverUrl,
-                errorHandling = true
+                errorHandling = true,
+                maxLines = 3
             ) {
                 serverVm.server = serverVm.server.copy(serverUrl = it)
             }
@@ -81,7 +97,7 @@ internal fun ServerView(
             LabelAndField(
                 Modifier.fillMaxWidth().padding(top = MaterialTheme.spacing.small),
                 "Organization",
-                serverVm.server.organization ?: ""
+                serverVm.server.organization
             ) {
                 serverVm.server = serverVm.server.copy(organization = it)
             }
@@ -93,37 +109,20 @@ internal fun ServerView(
             ) {
                 serverVm.server = serverVm.server.copy(description = it)
             }
-
             Row(
-                Modifier.padding(bottom = MaterialTheme.spacing.small, top = MaterialTheme.spacing.small).fillMaxWidth()
-                    .border(width = 3.dp, color = MaterialTheme.colors.onBackground)
-
+                modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Max).padding(top = MaterialTheme.spacing.small)
             ) {
-                Column {
-                    Text(
-                        "SSH Agent",
-                        color = MaterialTheme.colors.onBackground,
-                        modifier = Modifier.padding(MaterialTheme.spacing.small),
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        TerminalCheckbox(
-                            serverVm.server.showSSHAgent,
-                            onCheckedChange = { serverVm.server = serverVm.server.copy(showSSHAgent = it) })
-                        Text("Show SSH Agent as selectable option")
-                    }
-
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        TerminalCheckbox(
-                            serverVm.server.isSSHAgentDefault,
-                            onCheckedChange = {
-                                //Set defaultUserId to null, as this the SSH Agent is a special user, that isn't part of the user list
-                                serverVm.server = serverVm.server.copy(isSSHAgentDefault = it, defaultUserId = null)
-                            })
-                        Text("Make the SSH Agent the default user")
-                    }
-                }
+                LabelComboboWithDeleteIcon(
+                    modifier = Modifier.weight(1.0f).padding(end = MaterialTheme.spacing.extraSmall),
+                    label = "Jump Host",
+                    value = proxyVm.proxy,
+                    options = proxies,
+                    onDelete = {
+                        serverVm.server = serverVm.server.copy(proxyId = null)
+                        proxyVm.proxy = null
+                    },
+                    onSelect = { serverVm.server = serverVm.server.copy(proxyId = it.id) }
+                )
             }
         }
 
@@ -177,6 +176,45 @@ private fun LabelAndField(
                 value.isEmpty()
             } else false
         )
+    }
+}
+
+/**
+ * Display a Label together with a Textfield in a Row
+ */
+@Composable
+private fun <T> LabelComboboWithDeleteIcon(
+    modifier: Modifier,
+    label: String,
+    value: T?,
+    options: List<T>,
+    onDelete: () -> Unit,
+    onSelect: (T) -> Unit
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start
+    ) {
+        Row(
+            modifier = Modifier.weight(0.3f).fillMaxSize().background(MaterialTheme.colors.onPrimary),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                label,
+                color = MaterialTheme.colors.background,
+                modifier = Modifier.padding(start = MaterialTheme.spacing.small)
+            )
+        }
+        TerminalCombobox(
+            modifier = Modifier.weight(0.6f).fillMaxHeight(),
+            selectedOption = value,
+            options = options,
+            defaultToFirstItem = false
+        ) { selected -> onSelect(selected) }
+        IconButton(modifier = Modifier.weight(0.1f), onClick = onDelete) {
+            Icon(Icons.Filled.Delete, "")
+        }
     }
 }
 

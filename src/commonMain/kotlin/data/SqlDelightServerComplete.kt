@@ -35,7 +35,7 @@ private fun List<Servercomplete>.toServerComplete(): List<ServerComplete> {
     }.distinct()
 
     val userServersMap = this.groupBy { it.user_id }.mapValues { (_, group) -> group.map { it.server_id } }
-    val user = this.filter { it.user_id != null }.map {
+    val users = this.filter { it.user_id != null }.map {
         User(
             userId = it.user_id!!,
             serverIds = userServersMap[it.user_id] ?: emptyList(),
@@ -51,6 +51,7 @@ private fun List<Servercomplete>.toServerComplete(): List<ServerComplete> {
         ServerComplete(
             Server(
                 serverId = it.server_id,
+                proxyId = it.proxy_id,
                 serverUrl = it.server_url,
                 title = it.title,
                 organization = it.organization,
@@ -61,7 +62,7 @@ private fun List<Servercomplete>.toServerComplete(): List<ServerComplete> {
                 defaultUserId = it.defaultUserId
             ),
             tags.filter { tag -> tag.serverIds.contains(it.server_id) },
-            user.filter { user -> user.serverIds.contains(it.server_id) }
+            users.filter { user -> user.serverIds.contains(it.server_id) }
         )
     }
 }

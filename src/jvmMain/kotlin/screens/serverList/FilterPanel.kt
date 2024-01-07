@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import screens.tagManagement.TagViewModel
 import screens.userManagement.UserViewModel
-import ui.components.CarbonMultiselectCombobox
+import ui.components.TerminalMultiselectCombobox
 import ui.components.TerminalTextField
 import ui.theme.spacing
 
@@ -43,7 +43,7 @@ fun FilterPanel(
         )
 
         Column(modifier = Modifier.weight(0.3f).padding(end = MaterialTheme.spacing.extraSmall)) {
-            CarbonMultiselectCombobox(
+            TerminalMultiselectCombobox(
                 modifier = Modifier,
                 filterName = "User",
                 userVM.filteredUsers.distinctBy { it.userId },
@@ -57,7 +57,7 @@ fun FilterPanel(
         }
 
         Column(modifier = Modifier.weight(0.3f).padding(end = MaterialTheme.spacing.extraSmall)) {
-            CarbonMultiselectCombobox(
+            TerminalMultiselectCombobox(
                 modifier = Modifier.weight(0.3f),
                 filterName = "Tag",
                 selectedOptions = tagVM.filteredTags.distinctBy { it.tagId },

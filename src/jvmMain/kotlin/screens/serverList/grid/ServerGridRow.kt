@@ -1,5 +1,6 @@
 package screens.serverList.grid
 
+import AppViewModels
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
@@ -28,10 +29,16 @@ fun ServerItem(
     selectedId: Long,
     onSelect: (Long) -> Unit
 ) {
+    val userOptions = serverComplete.users.toMutableList()
+    if (serverComplete.server.showSSHAgent) {
+        userOptions += User("SSH Agent")
+    }
+
     var selectedUser: User? by remember {
         mutableStateOf(
             if (serverComplete.users.isEmpty()) null else
                 serverComplete.users.firstOrNull { it.userId == serverComplete.server.defaultUserId }
+                    ?: userOptions.firstOrNull { it.userId < 0 }
         )
     }
     val clipboardManager = LocalClipboardManager.current
@@ -58,12 +65,7 @@ fun ServerItem(
             )
         }
 
-        //If the selectedUser is empty or its id is < 0 (meaning SSH Agent user) do not specify a username
-        val sshAction = if (selectedUser == null || selectedUser?.userId!! < 0) {
-            "ssh ${serverComplete.server.serverUrl}"
-        } else {
-            "ssh ${selectedUser?.username}@${serverComplete.server.serverUrl}"
-        }
+        val sshAction = getSSHCommand(selectedUser, serverComplete)
 
         //Run Button
         TableIconButton(icon = Icons.Filled.PlayArrow, modifier = Modifier.weight(ServerHeader.RUN.weight)) {
@@ -79,14 +81,11 @@ fun ServerItem(
             modifier = Modifier.weight(ServerHeader.SERVER.weight)
         )
         //User Selection
-        val userOptions = serverComplete.users.toMutableList()
-        if (serverComplete.server.showSSHAgent) {
-            userOptions += User("SSH Agent")
-        }
+
         TerminalCombobox(
             modifier = Modifier.weight(ServerHeader.USER.weight).fillMaxHeight(),
-            selectedUser,
-            userOptions
+            selectedOption = selectedUser,
+            options = userOptions
         ) { u -> selectedUser = u }
         //Description
         TableCell(
@@ -94,4 +93,62 @@ fun ServerItem(
             modifier = Modifier.weight(ServerHeader.DESCRIPTION.weight)
         )
     }
+}
+
+private fun getSSHCommand(selectedUser: User?, serverComplete: ServerComplete): String {
+    val proxyVm = AppViewModels.proxyVM
+
+    val sshCommand = StringBuilder()
+    sshCommand.append("ssh ")
+
+    serverComplete.server.proxyId?.let { proxyId ->
+        proxyVm.updateSelectedProxy(proxyId)
+
+        if(!proxyVm.proxy?.jumpserverList.isNullOrEmpty()) {
+            sshCommand.append("-J ")
+        }
+        proxyVm.proxy?.jumpserverList?.forEachIndexed { index, js ->
+            //Skip if this jumpserver has no server selected
+            if (js.server == null || js.server.serverId < 0) {
+                //If this was the last server add a space
+                if (proxyVm.proxy!!.jumpserverList.lastIndex == index) {
+                    sshCommand.append(" ")
+                }
+                return@forEachIndexed
+            }
+
+            //If there is more than one jumpserver and this is not the first item add a comma
+            if(proxyVm.proxy!!.jumpserverList.size > 1 && index != 0) {
+                sshCommand.append(",")
+            }
+            //Add User
+            js.user?.username?.let { username ->
+                if (username.isNotEmpty()) {
+                    sshCommand.append("$username@")
+                }
+            }
+            //Add Server
+            js.server.serverUrl.let { serverUrl -> sshCommand.append(serverUrl) }
+            //Add Port
+            js.port?.let { port ->
+                if (port != 22L) {
+                    sshCommand.append(":$port")
+                }
+            }
+
+            //If it is the last item add a space
+            if (proxyVm.proxy!!.jumpserverList.lastIndex == index) {
+                sshCommand.append(" ")
+            }
+        }
+    }
+
+    //If the selectedUser is empty or its id is < 0 (meaning SSH Agent user) do not specify a username
+    if (selectedUser == null || selectedUser.userId < 0) {
+        sshCommand.append(serverComplete.server.serverUrl)
+    } else {
+        sshCommand.append("${selectedUser.username}@${serverComplete.server.serverUrl}")
+    }
+
+    return sshCommand.toString()
 }

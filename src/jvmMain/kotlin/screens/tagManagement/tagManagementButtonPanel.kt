@@ -1,4 +1,4 @@
-package screens.userManagement
+package screens.tagManagement
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -7,19 +7,17 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import domain.User
+import domain.Tag
 import ui.components.DialogType
 import ui.components.TerminalTextButton
 import ui.components.terminalTheme
 import ui.theme.spacing
 
 @Composable
-fun UserMgmtButtonPanel(modifier: Modifier, users: List<User>, selectedUserId: Long, userVm: UserViewModel) {
+fun TagManagementButtonPanel(modifier: Modifier, tags: List<Tag>, selectedTagId: Long, tagVm: TagViewModel) {
     var dialogType by remember { mutableStateOf(DialogType.CREATE) }
     var showDialog by remember { mutableStateOf(false) }
-    val userIsSelected = users.map { it.userId }.contains(selectedUserId)
-    val selectedUser = users.firstOrNull { it.userId == selectedUserId }
-
+    val selectedTag = tags.firstOrNull { it.tagId == selectedTagId }
 
     Row(modifier) {
         TerminalTextButton(modifier = Modifier.padding(end = MaterialTheme.spacing.small).fillMaxHeight()
@@ -32,34 +30,33 @@ fun UserMgmtButtonPanel(modifier: Modifier, users: List<User>, selectedUserId: L
         }
         TerminalTextButton(
             modifier = Modifier.padding(end = MaterialTheme.spacing.small).fillMaxHeight()
-                .terminalTheme(isEnabled = userIsSelected),
+                .terminalTheme(isEnabled = selectedTag != null),
             onClick = {
                 dialogType = DialogType.RENAME
                 showDialog = true
             },
-            enabled = userIsSelected
+            enabled = selectedTag != null
         ) {
             Text("Rename", color = MaterialTheme.colors.onPrimary, modifier = it)
         }
         TerminalTextButton(
-            modifier = Modifier.fillMaxHeight().terminalTheme(isError = true, isEnabled = userIsSelected),
+            modifier = Modifier.fillMaxHeight().terminalTheme(isError = true, isEnabled = selectedTag != null),
             onClick = {
                 dialogType = DialogType.DELETE
                 showDialog = true
             },
-            enabled = userIsSelected
+            enabled = selectedTag != null
         ) {
             Text("Delete", color = MaterialTheme.colors.onPrimary, modifier = it)
         }
     }
 
-    if (selectedUser != null) {
-        userManagementDialogs(
-            showDialog = showDialog,
-            dialogType = dialogType,
-            userVm = userVm,
-            selectedUser = selectedUser,
-            onShowDialog = { showDialog = it }
-        )
-    }
+    TagManagementDialog(
+        showDialog = showDialog,
+        dialogType = dialogType,
+        tagVm = tagVm,
+        selectedTag = selectedTag,
+        onShowDialog = { showDialog = it }
+    )
+
 }

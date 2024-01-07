@@ -51,7 +51,7 @@ class UserViewModel(
                 )
 
                 is UserEvent.SelectUser -> {
-                    //In case the use is not in the selectedUsers list add it
+                    //In case the user is not in the selectedUsers list add it
                     if (userEvent.user.userId !in selectedUsers.map { it.userId }) {
                         selectedUsers += userEvent.user
                     } else {

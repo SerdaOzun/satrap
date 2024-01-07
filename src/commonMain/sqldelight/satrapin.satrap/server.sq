@@ -2,6 +2,7 @@ import kotlin.Boolean;
 
 CREATE TABLE IF NOT EXISTS serverEntity (
   server_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  proxy_id INTEGER,
   server_url TEXT NOT NULL,
   title TEXT NOT NULL,
   organization Text NOT NULL,
@@ -9,7 +10,8 @@ CREATE TABLE IF NOT EXISTS serverEntity (
   syncServer INTEGER AS Boolean NOT NULL DEFAULT 0, -- sync with remote
   showSSHAgent INTEGER AS Boolean NOT NULL DEFAULT 0,
   isSSHAgentDefault INTEGER AS Boolean NOT NULL DEFAULT 0,
-  defaultUserId INTEGER
+  defaultUserId INTEGER,
+  FOREIGN KEY (proxy_id) REFERENCES proxy(proxy_id) ON DELETE CASCADE
 );
 
 getLastInsertedId:
@@ -17,8 +19,8 @@ SELECT last_insert_rowid();
 
 insertServer:
 INSERT OR REPLACE
-INTO serverEntity(server_id, server_url, title, organization, description, syncServer, showSSHAgent, isSSHAgentDefault, defaultUserId)
-VALUES (?, ?, ?, ?, ?,?, ?, ?,?);
+INTO serverEntity(server_id, proxy_id, server_url, title, organization, description, syncServer, showSSHAgent, isSSHAgentDefault, defaultUserId)
+VALUES (?, ?, ?, ?, ?,?, ?, ?,?, ?);
 
 getAllServers:
 SELECT *

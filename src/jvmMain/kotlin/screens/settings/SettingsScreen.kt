@@ -17,8 +17,6 @@ import util.currentOS
 @Composable
 fun SettingsScreen() {
     Column(modifier = Modifier.padding(MaterialTheme.spacing.medium)) {
-
-
         TerminalCombobox(
             modifier = Modifier.width(IntrinsicSize.Min).padding(bottom = MaterialTheme.spacing.medium),
             config.terminal.label,

@@ -92,7 +92,6 @@ fun ServerGrid(
             servers.firstOrNull { it.server.serverId == selectedId }
         )
     }
-
 }
 
 @Composable

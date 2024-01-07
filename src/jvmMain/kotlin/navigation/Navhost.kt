@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import moe.tlaster.precompose.navigation.NavHost
 import moe.tlaster.precompose.navigation.Navigator
 import screens.environmentVars.EnvironmentVarsScreen
+import screens.proxy.ProxyScreen
 import screens.server.ServerScreen
 import screens.serverList.ServerListScreen
 import screens.settings.SettingsScreen
@@ -38,6 +39,9 @@ fun SatrapNavHost(navigator: Navigator) {
         }
         scene(Screen.EnvVarsScreen.name) {
             EnvironmentVarsScreen(navigator)
+        }
+        scene(Screen.ProxyScreen.name) {
+            ProxyScreen()
         }
 //        scene(Screen.ScriptsScreen.name) {
 //            ScriptsScreen()

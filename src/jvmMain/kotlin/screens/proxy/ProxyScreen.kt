@@ -1,4 +1,4 @@
-package screens.tagManagement
+package screens.proxy
 
 import AppViewModels
 import androidx.compose.foundation.background
@@ -13,30 +13,24 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import domain.Tag
-import moe.tlaster.precompose.navigation.Navigator
-import screens.serverList.ServerViewModel
+import domain.Proxy
 import screens.serverList.grid.TableCell
 import ui.theme.spacing
 
 @Composable
-fun TagManagementScreen(
-    navigator: Navigator,
-    tagVm: TagViewModel = AppViewModels.tagVm,
-    serverVm: ServerViewModel = AppViewModels.serverVM
+fun ProxyScreen(
+    proxyVM: ProxyViewModel = AppViewModels.proxyVM
 ) {
 
-    val tags by tagVm.allTags.collectAsState(initial = emptyList())
-
-    var selectedTagId by remember { mutableStateOf(-1L) }
+    val proxies by proxyVM.proxies.collectAsState(initial = emptyList())
+    var selectedProxyId by remember { mutableStateOf(-1L) }
 
     Column(modifier = Modifier.fillMaxSize()) {
         Row(modifier = Modifier.weight(0.9f)) {
-            //Left side - Tag List
+            //Left side - proxy name list
             LazyColumn(
-                modifier = Modifier.weight(0.6f).padding(end = MaterialTheme.spacing.medium)
+                modifier = Modifier.weight(0.35f).padding(end = MaterialTheme.spacing.medium)
             ) {
-                //Header
                 item {
                     Row(
                         modifier = Modifier.fillMaxSize()
@@ -44,33 +38,38 @@ fun TagManagementScreen(
                             .background(MaterialTheme.colors.onPrimary),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        TableCell(text = "Tag", textColor = MaterialTheme.colors.background)
+                        TableCell(text = "Proxy", textColor = MaterialTheme.colors.background)
                     }
                 }
-                //List of users
-                items(tags) { tag ->
-                    TagItem(tag, selectedTagId) { selectedTagId = it ?: -1 }
+                //List of proxies
+                items(proxies) { proxy ->
+                    ProxyItem(proxy, selectedProxyId) { selectedProxyId = it }
                 }
             }
 
-            //Right side - Server list
-            TagAssignmentGrid(Modifier.weight(0.4f), tags, selectedTagId, tagVm, serverVm)
+            //Right side - Proxy configuration
+            ProxyConfiguration(
+                Modifier.weight(0.65f),
+                proxies.firstOrNull { it.id == selectedProxyId },
+                proxyVM
+            )
         }
-        TagManagementButtonPanel(Modifier.height(IntrinsicSize.Min).fillMaxWidth(), tags, selectedTagId, tagVm)
+        ProxyManagementButtonPanel(Modifier.height(IntrinsicSize.Min).fillMaxWidth(), proxies, selectedProxyId, proxyVM)
     }
+
 }
 
 @Composable
-private fun TagItem(tag: Tag, selectedId: Long, onSelect: (Long?) -> Unit) {
+private fun ProxyItem(proxy: Proxy, selectedId: Long, onSelect: (Long) -> Unit) {
     Row(
-        modifier = Modifier.clickable { if (selectedId != tag.tagId) onSelect(tag.tagId) }
+        modifier = Modifier.clickable { if (selectedId != proxy.id) onSelect(proxy.id) }
             .height(IntrinsicSize.Min)
             .fillMaxWidth()
             .border(width = 1.dp, color = MaterialTheme.colors.onPrimary),
         verticalAlignment = Alignment.CenterVertically
     ) {
         //Selected
-        if (selectedId == tag.tagId) {
+        if (selectedId == proxy.id) {
             Divider(
                 color = MaterialTheme.colors.onSurface,
                 modifier = Modifier
@@ -79,7 +78,6 @@ private fun TagItem(tag: Tag, selectedId: Long, onSelect: (Long?) -> Unit) {
             )
         }
 
-        TableCell(text = tag.tag, modifier = Modifier)
-
+        TableCell(text = proxy.title, modifier = Modifier)
     }
 }

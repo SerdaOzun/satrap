@@ -10,6 +10,7 @@ object AppDatabase {
     val sqlServerComplete = SqlDelightServerComplete(database)
     val sqlTag = SqlDelightTag(database)
     val sqlUser = SqlDelightUser(database)
+    val sqlProxy = SqlDelightJumpProxy(database)
 
     val sqlSettings = SqlDelightSettings(database)
 }

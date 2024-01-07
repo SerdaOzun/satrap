@@ -31,6 +31,8 @@ data class User(
     }
 
     constructor(username: String) : this(-1L, emptyList(), username, "", false, false, "")
+    constructor(userId: Long, username: String) : this(userId, emptyList(), username, "", false, false, "")
+    constructor(username: String, serverIds: List<Long>) : this(-1L, serverIds, username, "", false, false, "")
     constructor(
         username: String,
         role: String,
@@ -38,6 +40,7 @@ data class User(
         syncUser: Boolean,
         userLevelDescription: String
     ) : this(-1L, emptyList(), username, role, defaultUser, syncUser, userLevelDescription)
+
     constructor(
         serverIds: List<Long>,
         username: String,

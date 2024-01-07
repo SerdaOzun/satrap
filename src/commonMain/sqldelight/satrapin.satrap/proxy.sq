@@ -1,0 +1,32 @@
+CREATE TABLE IF NOT EXISTS proxy (
+  proxy_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  proxy_name TEXT NOT NULL
+);
+
+getLastInsertedId:
+SELECT last_insert_rowid();
+
+insert:
+INSERT OR REPLACE
+INTO proxy(proxy_id, proxy_name)
+VALUES (?, ?);
+
+getAll:
+SELECT *
+FROM proxy;
+
+getAllProxyComplete:
+SELECT proxy.*, js.jumpserver_id, js.jumpserver_order, js.jumpserver_userId, js.jumpsserver_serverId, js.jumpserver_port, se.server_url, se.title, ue.username
+FROM proxy AS proxy
+LEFT JOIN jumpserver AS js  ON proxy.proxy_id = js.proxy_id
+LEFT JOIN serverEntity AS se ON js.jumpsserver_serverId = se.server_id
+LEFT JOIN userEntity AS ue ON js.jumpserver_userId = ue.user_id;
+
+get:
+SELECT *
+FROM proxy
+WHERE proxy_id = :id;
+
+delete:
+DELETE FROM proxy
+WHERE proxy_id = :id;

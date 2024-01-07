@@ -30,7 +30,7 @@ fun UserManagementScreen(
 
     var selectedUserId by remember { mutableStateOf(-1L) }
 
-    Column(modifier = Modifier.padding(MaterialTheme.spacing.medium).fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize()) {
         Row(modifier = Modifier.weight(0.9f)) {
             //Left side - User List
             LazyColumn(
@@ -56,7 +56,7 @@ fun UserManagementScreen(
             //Right side - Server list
             ServerAssignmentGrid(Modifier.weight(0.4f), users, selectedUserId, userVm, serverVm)
         }
-        UserMgmtButtonPanel(Modifier.weight(0.1f), users, selectedUserId, userVm)
+        UserManagementButtonPanel(Modifier.height(IntrinsicSize.Min).fillMaxWidth(), users, selectedUserId, userVm)
     }
 }
 

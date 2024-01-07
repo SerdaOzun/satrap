@@ -1,67 +1,73 @@
-package screens.tagManagement
+package screens.userManagement
 
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
-import domain.Tag
+import domain.User
 import ui.components.DialogType
 import ui.components.DialogWithConfirmAndCancel
 import ui.components.TerminalTextField
 
 @Composable
-fun tagManagementDialogs(
+fun UserManagementDialog(
     showDialog: Boolean,
     dialogType: DialogType,
-    tagVm: TagViewModel,
-    selectedTag: Tag,
+    userVm: UserViewModel,
+    selectedUser: User?,
     onShowDialog: (Boolean) -> Unit
 ) {
     if (showDialog) {
-        //Either a new tag or new tag name
-        var newTag by remember { mutableStateOf("") }
+        var newUser by remember { mutableStateOf("") }
 
         when (dialogType) {
             DialogType.CREATE -> {
                 DialogWithConfirmAndCancel(
-                    message = "New Tag",
+                    message = "New User",
                     content = {
-                        TerminalTextField(label = "New Tag...", value = newTag, onValueChange = { newTag = it })
+                        TerminalTextField(label = "New username...", value = newUser, onValueChange = { newUser = it.trim() })
                     },
                     onConfirm = {
-                        tagVm.onEvent(TagEvent.InsertTag(Tag(tag = newTag)))
-                        newTag = ""
+                        userVm.onEvent(UserEvent.InsertUser(User(username = newUser)))
+                        newUser = ""
                         onShowDialog(false)
                     },
                     onDismiss = {
                         onShowDialog(false)
-                        newTag = ""
+                        newUser = ""
                     }
                 )
             }
 
             DialogType.RENAME -> {
                 DialogWithConfirmAndCancel(
-                    message = "Rename tag",
+                    message = "Rename user",
                     content = {
-                        TerminalTextField(label = "Enter the new name...", value = newTag, onValueChange = { newTag = it })
+                        TerminalTextField(
+                            label = "Enter the new name...",
+                            value = newUser,
+                            onValueChange = { newUser = it })
                     },
                     onConfirm = {
-                        tagVm.onEvent(TagEvent.InsertTag(selectedTag.copy(tag = newTag)))
-                        newTag = ""
+                        if (selectedUser != null) {
+                            userVm.onEvent(UserEvent.InsertUser(selectedUser.copy(username = newUser)))
+                            newUser = ""
+                        }
                         onShowDialog(false)
                     },
                     onDismiss = {
                         onShowDialog(false)
-                        newTag = ""
+                        newUser = ""
                     }
                 )
             }
 
             DialogType.DELETE -> {
                 DialogWithConfirmAndCancel(
-                    message = "Are you sure you want to delete the tag?",
+                    message = "Are you sure you want to delete the user?",
                     confirmButtonLabel = "Delete",
                     onConfirm = {
-                        tagVm.onEvent(TagEvent.DeleteTag(selectedTag))
+                        if(selectedUser != null) {
+                            userVm.onEvent(UserEvent.DeleteUser(selectedUser.userId))
+                        }
                         onShowDialog(false)
                     },
                     confirmButtonColor = MaterialTheme.colors.error,

@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import ui.theme.spacing
 
 @Composable
-fun <T> CarbonMultiselectCombobox(
+fun <T> TerminalMultiselectCombobox(
     modifier: Modifier,
     filterName: String,
     selectedOptions: List<T>,
@@ -78,8 +78,22 @@ fun <T> CarbonMultiselectCombobox(
     }
 }
 
+/**
+ * Important: Always selects the first item of available options, if selectedOption wasn't passed
+ * @param modifier
+ * @param selectedOption the selected Item of the combobox
+ * @param defaultToFirstItem if the selectedOption is null, should it default to the first item of the options list?
+ * @param options for selection in the combobox
+ * @param onClick on an item
+ */
 @Composable
-fun <T> TerminalCombobox(modifier: Modifier, selectedOption: T?, options: List<T>, onClick: (T) -> Unit) {
+fun <T> TerminalCombobox(
+    modifier: Modifier,
+    selectedOption: T?,
+    options: List<T>,
+    defaultToFirstItem: Boolean = true,
+    onClick: (T) -> Unit
+) {
     var size by remember { mutableStateOf(IntSize.Zero) }
     var expanded by remember { mutableStateOf(false) }
     Row(
@@ -89,7 +103,7 @@ fun <T> TerminalCombobox(modifier: Modifier, selectedOption: T?, options: List<T
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            selectedOption?.toString() ?: options.firstOrNull()?.toString() ?: "SSH Agent",
+            selectedOption?.toString() ?: if(defaultToFirstItem) options.firstOrNull()?.toString() ?: "" else "",
             modifier = Modifier.weight(0.9f).padding(start = 10.dp)
         )
         Icon(

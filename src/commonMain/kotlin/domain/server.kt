@@ -27,6 +27,7 @@ interface ServerDataSource {
  */
 data class Server(
     val serverId: Long,
+    var proxyId: Long?,
     var serverUrl: String,
     var title: String,
     var organization: String,
@@ -37,13 +38,23 @@ data class Server(
     var defaultUserId: Long?
 ) {
     constructor(
+        serverId: Long,
+        serverUrl: String,
+        title: String,
+    ) : this(serverId, null, serverUrl, title, "", "", true, true, true, null)
+
+    constructor(
         serverUrl: String,
         title: String,
         organization: String,
         description: String,
         syncServer: Boolean,
         defaultUserId: Long?
-    ) : this(-1L, serverUrl, title, organization, description, syncServer, true, true, defaultUserId)
+    ) : this(-1L, null, serverUrl, title, organization, description, syncServer, true, true, defaultUserId)
+
+    override fun toString(): String {
+        return title
+    }
 }
 
 /**
@@ -57,6 +68,7 @@ data class ServerComplete(
 
 fun ServerEntity.toServer() = Server(
     serverId = server_id,
+    proxyId = proxy_id,
     serverUrl = server_url,
     title = title,
     organization = organization,

@@ -22,6 +22,7 @@ class SqlDelightServer(
         server.run {
             queries.insertServer(
                 if (serverId < 0) null else serverId,
+                proxyId,
                 serverUrl,
                 title,
                 organization,

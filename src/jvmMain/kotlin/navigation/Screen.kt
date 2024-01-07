@@ -28,6 +28,11 @@ enum class Screen(
         group = ScreenGroup.SSH,
         icon = Icons.Filled.Check
     ),
+    ProxyScreen(
+        label = "Jump Hosts",
+        group = ScreenGroup.SSH,
+        icon = Icons.Filled.Home
+    ),
     ServerScreen(
         label = "Server",
         icon = Icons.Filled.Add,

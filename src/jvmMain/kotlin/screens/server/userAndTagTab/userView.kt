@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -22,10 +21,7 @@ import screens.serverList.ServerViewModel
 import screens.serverList.util.ServerEvent
 import screens.userManagement.UserEvent
 import screens.userManagement.UserViewModel
-import ui.components.ColorRow
-import ui.components.TerminalTextButton
-import ui.components.TerminalTextField
-import ui.components.terminalTheme
+import ui.components.*
 import ui.theme.LightGreen
 import ui.theme.Turquoise
 import ui.theme.spacing
@@ -59,7 +55,45 @@ fun UserCreationList(serverVM: ServerViewModel, userVM: UserViewModel) {
                 )
             }
 
-            Divider(thickness = 3.dp, color = MaterialTheme.colors.onBackground)
+            Row(
+                Modifier.padding(bottom = MaterialTheme.spacing.small, top = MaterialTheme.spacing.small).fillMaxWidth()
+                    .border(width = 3.dp, color = MaterialTheme.colors.onBackground)
+
+            ) {
+                Column {
+                    Text(
+                        "SSH Agent",
+                        color = MaterialTheme.colors.onBackground,
+                        modifier = Modifier.padding(MaterialTheme.spacing.small),
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        TerminalCheckbox(
+                            serverVM.server.showSSHAgent,
+                            onCheckedChange = {
+                                serverVM.server = serverVM.server.copy(showSSHAgent = it)
+                                if (!it) {
+                                    serverVM.server = serverVM.server.copy(isSSHAgentDefault = false)
+                                }
+                            })
+                        Text("Show SSH Agent as selectable option")
+                    }
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        TerminalCheckbox(
+                            serverVM.server.isSSHAgentDefault,
+                            onCheckedChange = {
+                                //Set defaultUserId to null, as this the SSH Agent is a special user, that isn't part of the user list
+                                serverVM.server = serverVM.server.copy(isSSHAgentDefault = it, defaultUserId = null)
+                                if (it) {
+                                    serverVM.server = serverVM.server.copy(showSSHAgent = true)
+                                }
+                            })
+                        Text("Make the SSH Agent the default user")
+                    }
+                }
+            }
 
             Row(
                 horizontalArrangement = Arrangement.Start,

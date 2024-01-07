@@ -7,9 +7,9 @@ import satrapinsatrap.SettingsEntity
  * @see Setting
  */
 interface SettingsDataSource {
-    suspend fun insertSetting(setting: Setting)
-    suspend fun getSetting(setting: String): Setting?
-    suspend fun getAllSettings(): List<Setting>
+    fun insertSetting(setting: Setting)
+    fun getSetting(setting: String): Setting?
+    fun getAllSettings(): List<Setting>
 }
 
 /**
