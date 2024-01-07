@@ -1,9 +1,6 @@
 package screens.proxy
 
 import AppDatabase
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import data.SqlDelightJumpProxy
 import domain.JumpServer
 import domain.Proxy
@@ -18,12 +15,8 @@ class ProxyViewModel(
 
     //All jumpproxies
     val proxies = jumpProxyDataSource.getAll()
-    //Updated with updateSelectedProxy
-    var proxy by mutableStateOf<Proxy?>(null)
 
-    fun updateSelectedProxy(proxyId: Long) {
-        proxy = jumpProxyDataSource.getProxy(proxyId)
-    }
+    fun getProxy(proxyId: Long?): Proxy? = proxyId?.let { id -> jumpProxyDataSource.getProxy(id) }
 
     fun onEvent(proxyEvent: ProxyEvent) {
         viewModelScope.launch {

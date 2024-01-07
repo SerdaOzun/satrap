@@ -106,7 +106,7 @@ fun ProxyConfiguration(
                     TerminalTextButton(
                         modifier = Modifier.width(175.dp).padding(MaterialTheme.spacing.small).terminalTheme(),
                         onClick = {
-                            if (proxy.jumpserverList.lastOrNull()?.server != null) {
+                            if (proxy.jumpserverList.lastOrNull()?.server != null || proxy.jumpserverList.isEmpty()) {
                                 proxyVM.onEvent(
                                     ProxyEvent.InsertJumpserver(
                                         JumpServer(

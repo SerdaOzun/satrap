@@ -102,23 +102,23 @@ private fun getSSHCommand(selectedUser: User?, serverComplete: ServerComplete): 
     sshCommand.append("ssh ")
 
     serverComplete.server.proxyId?.let { proxyId ->
-        proxyVm.updateSelectedProxy(proxyId)
+        val selectedProxy = proxyVm.getProxy(proxyId)
 
-        if(!proxyVm.proxy?.jumpserverList.isNullOrEmpty()) {
+        if(!selectedProxy?.jumpserverList.isNullOrEmpty() && selectedProxy?.jumpserverList?.all { it.server == null || it.server.serverId < 0} != true ) {
             sshCommand.append("-J ")
         }
-        proxyVm.proxy?.jumpserverList?.forEachIndexed { index, js ->
+        selectedProxy?.jumpserverList?.forEachIndexed { index, js ->
             //Skip if this jumpserver has no server selected
             if (js.server == null || js.server.serverId < 0) {
                 //If this was the last server add a space
-                if (proxyVm.proxy!!.jumpserverList.lastIndex == index) {
+                if (selectedProxy.jumpserverList.lastIndex == index && selectedProxy.jumpserverList.size != 1) {
                     sshCommand.append(" ")
                 }
                 return@forEachIndexed
             }
 
             //If there is more than one jumpserver and this is not the first item add a comma
-            if(proxyVm.proxy!!.jumpserverList.size > 1 && index != 0) {
+            if(selectedProxy.jumpserverList.size > 1 && index != 0) {
                 sshCommand.append(",")
             }
             //Add User
@@ -137,7 +137,7 @@ private fun getSSHCommand(selectedUser: User?, serverComplete: ServerComplete): 
             }
 
             //If it is the last item add a space
-            if (proxyVm.proxy!!.jumpserverList.lastIndex == index) {
+            if (selectedProxy.jumpserverList.lastIndex == index) {
                 sshCommand.append(" ")
             }
         }

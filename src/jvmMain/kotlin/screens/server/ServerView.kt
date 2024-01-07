@@ -9,10 +9,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -47,9 +44,11 @@ internal fun ServerView(
 ) {
 
     val proxies by proxyVm.proxies.collectAsState(emptyList())
-    LaunchedEffect(key1 = serverVm.server.proxyId, key2 = proxyVm.proxy) {
-        //Get proxy if exists
-        serverVm.server.proxyId?.let { id -> proxyVm.updateSelectedProxy(id) }
+    var selectedProxy by remember { mutableStateOf(proxyVm.getProxy(serverVm.server.proxyId)) }
+
+    LaunchedEffect(key1 = serverVm.server.proxyId) {
+        //Get proxy if exists, otherwise reset to null
+        selectedProxy = proxyVm.getProxy(serverVm.server.proxyId)
     }
 
     Column(
@@ -115,11 +114,10 @@ internal fun ServerView(
                 LabelComboboWithDeleteIcon(
                     modifier = Modifier.weight(1.0f).padding(end = MaterialTheme.spacing.extraSmall),
                     label = "Jump Host",
-                    value = proxyVm.proxy,
+                    value = selectedProxy ,
                     options = proxies,
                     onDelete = {
                         serverVm.server = serverVm.server.copy(proxyId = null)
-                        proxyVm.proxy = null
                     },
                     onSelect = { serverVm.server = serverVm.server.copy(proxyId = it.id) }
                 )

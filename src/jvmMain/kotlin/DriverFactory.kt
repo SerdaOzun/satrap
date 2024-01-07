@@ -7,10 +7,14 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.util.*
 
 actual class DriverFactory {
     actual fun createDriver(): SqlDriver {
-        val driver: SqlDriver = JdbcSqliteDriver("jdbc:sqlite:${getDatabaseDirectory()}")
+        val driver: SqlDriver = JdbcSqliteDriver(
+            "jdbc:sqlite:${getDatabaseDirectory()}",
+            properties = Properties().apply { put("foreign_keys", "true") }
+        )
         if (!File("${getDatabaseDirectory()}").exists()) {
             Database.Schema.create(driver)
         }

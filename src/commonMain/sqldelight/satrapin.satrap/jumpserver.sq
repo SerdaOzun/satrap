@@ -1,13 +1,13 @@
 CREATE TABLE IF NOT EXISTS jumpserver (
   jumpserver_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   proxy_id INTEGER NOT NULL,
-  jumpserver_order INTEGER NOT NULL, -- Defines in which order to use jumpproxies if multiple are configured
+  jumpserver_order INTEGER NOT NULL, -- Defines in which order to use jumpservers if multiple are configured
   jumpserver_userId INTEGER,
   jumpsserver_serverId INTEGER,
   jumpserver_port INTEGER,
   FOREIGN KEY (proxy_id) REFERENCES proxy(proxy_id) ON DELETE CASCADE,
-  FOREIGN KEY (jumpserver_userId ) REFERENCES userEntity(user_id) ON DELETE CASCADE,
-  FOREIGN KEY (jumpserver_id ) REFERENCES serverEntity(server_id) ON DELETE CASCADE
+  FOREIGN KEY (jumpserver_userId ) REFERENCES userEntity(user_id) ON DELETE SET NULL,
+  FOREIGN KEY (jumpsserver_serverId) REFERENCES serverEntity(server_id) ON DELETE SET NULL
 );
 
 getLastInsertedId:
