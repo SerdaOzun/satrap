@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.*
@@ -92,6 +93,8 @@ fun <T> TerminalCombobox(
     selectedOption: T?,
     options: List<T>,
     defaultToFirstItem: Boolean = true,
+    withClear: Boolean = false,
+    deleteFn: () -> Unit = {},
     onClick: (T) -> Unit
 ) {
     var size by remember { mutableStateOf(IntSize.Zero) }
@@ -103,7 +106,7 @@ fun <T> TerminalCombobox(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            selectedOption?.toString() ?: if(defaultToFirstItem) options.firstOrNull()?.toString() ?: "" else "",
+            selectedOption?.toString() ?: if (defaultToFirstItem) options.firstOrNull()?.toString() ?: "" else "",
             modifier = Modifier.weight(0.9f).padding(start = 10.dp)
         )
         Icon(
@@ -117,6 +120,17 @@ fun <T> TerminalCombobox(
             onDismissRequest = { expanded = false },
             modifier = Modifier.width(size.width.dp)
         ) {
+            if (withClear) {
+                DropdownMenuItem(onClick = {
+                    deleteFn()
+                    expanded = false
+                }) {
+                    Row {
+                        Text("", modifier = Modifier.weight(0.9f))
+                        Icon(Icons.Filled.Delete, "", modifier = Modifier.weight(0.1f))
+                    }
+                }
+            }
             options.sortedBy { it.toString() }.forEach { opt ->
                 DropdownMenuItem(onClick = {
                     onClick(opt)

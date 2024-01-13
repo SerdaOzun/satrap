@@ -52,7 +52,7 @@ fun ProxyScreen(
             }
 
             //Right side - Proxy configuration
-            ProxyConfiguration(
+            JumpserverConfiguration(
                 Modifier.weight(0.65f),
                 proxies.firstOrNull { it.id == selectedProxyId },
                 proxyVM

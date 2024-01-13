@@ -21,7 +21,7 @@ SELECT *
 FROM proxy;
 
 getAllProxyComplete:
-SELECT proxy.*, js.jumpserver_id, js.jumpserver_order, js.jumpserver_userId, js.jumpsserver_serverId, js.jumpserver_port, se.server_url, se.title, ue.username
+SELECT proxy.*, js.jumpserver_id, js.jumpserver_order, js.jumpserver_userId, js.jumpsserver_serverId, se.server_url, se.title, se.port, ue.username
 FROM proxy AS proxy
 LEFT JOIN jumpserver AS js  ON proxy.proxy_id = js.proxy_id
 LEFT JOIN serverEntity AS se ON js.jumpsserver_serverId = se.server_id

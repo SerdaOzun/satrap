@@ -53,6 +53,7 @@ private fun List<Servercomplete>.toServerComplete(): List<ServerComplete> {
                 serverId = it.server_id,
                 proxyId = it.proxy_id,
                 serverUrl = it.server_url,
+                port = it.port,
                 title = it.title,
                 organization = it.organization,
                 description = it.description,

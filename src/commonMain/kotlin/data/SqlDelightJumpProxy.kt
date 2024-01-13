@@ -36,8 +36,7 @@ class SqlDelightJumpProxy(
                     proxy_id = proxyId,
                     jumpserver_order = order,
                     jumpserver_userId = user?.userId,
-                    jumpsserver_serverId = server?.serverId,
-                    jumpserver_port = port
+                    jumpsserver_serverId = server?.serverId
                 )
                 jumpserverQueries.getLastInsertedId().executeAsOneOrNull()
             }
@@ -51,7 +50,6 @@ class SqlDelightJumpProxy(
                 jumpserver_order = order,
                 jumpserver_userId = user?.userId,
                 jumpsserver_serverId = server?.serverId,
-                jumpserver_port = port,
                 jumpserver_id = id
             )
         }
@@ -99,10 +97,10 @@ class SqlDelightJumpProxy(
                     Server(
                         serverId = id,
                         serverUrl = it.server_url!!,
-                        title = it.title!!
+                        title = it.title!!,
+                        port = it.port!!
                     )
-                },
-                port = it.jumpserver_port
+                }
             )
         }
 

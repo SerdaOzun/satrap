@@ -28,6 +28,7 @@ class SqlDelightServer(
                     null,
                     proxyId,
                     serverUrl,
+                    port,
                     title,
                     organization,
                     description,
@@ -46,6 +47,7 @@ class SqlDelightServer(
             queries.updateServer(
                 proxyId,
                 serverUrl,
+                port,
                 title,
                 organization,
                 description,

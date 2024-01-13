@@ -130,7 +130,7 @@ private fun getSSHCommand(selectedUser: User?, serverComplete: ServerComplete): 
             //Add Server
             js.server.serverUrl.let { serverUrl -> sshCommand.append(serverUrl) }
             //Add Port
-            js.port?.let { port ->
+            js.server.port.let { port ->
                 if (port != 22L) {
                     sshCommand.append(":$port")
                 }
@@ -148,6 +148,11 @@ private fun getSSHCommand(selectedUser: User?, serverComplete: ServerComplete): 
         sshCommand.append(serverComplete.server.serverUrl)
     } else {
         sshCommand.append("${selectedUser.username}@${serverComplete.server.serverUrl}")
+    }
+
+    //Port
+    if(serverComplete.server.port != 22L) {
+        sshCommand.append(" -p ${serverComplete.server.port}")
     }
 
     return sshCommand.toString()

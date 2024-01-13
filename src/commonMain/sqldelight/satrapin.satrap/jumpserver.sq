@@ -4,7 +4,6 @@ CREATE TABLE IF NOT EXISTS jumpserver (
   jumpserver_order INTEGER NOT NULL, -- Defines in which order to use jumpservers if multiple are configured
   jumpserver_userId INTEGER,
   jumpsserver_serverId INTEGER,
-  jumpserver_port INTEGER,
   FOREIGN KEY (proxy_id) REFERENCES proxy(proxy_id) ON DELETE CASCADE,
   FOREIGN KEY (jumpserver_userId ) REFERENCES userEntity(user_id) ON DELETE SET NULL,
   FOREIGN KEY (jumpsserver_serverId) REFERENCES serverEntity(server_id) ON DELETE SET NULL
@@ -15,16 +14,16 @@ SELECT last_insert_rowid();
 
 insert:
 INSERT OR REPLACE
-INTO jumpserver(jumpserver_id, proxy_id, jumpserver_order, jumpserver_userId, jumpsserver_serverId, jumpserver_port)
-VALUES (?, ?, ?, ?, ?, ?);
+INTO jumpserver(jumpserver_id, proxy_id, jumpserver_order, jumpserver_userId, jumpsserver_serverId)
+VALUES (?, ?, ?, ?, ?);
 
 update:
 UPDATE jumpserver
-SET proxy_id=?, jumpserver_order=?, jumpserver_userId=?, jumpsserver_serverId=?, jumpserver_port=?
+SET proxy_id=?, jumpserver_order=?, jumpserver_userId=?, jumpsserver_serverId=?
 WHERE jumpserver_id=?;
 
 getAllJumpservers:
-SELECT jumpserver.*, se.server_url, se.title, ue.username
+SELECT jumpserver.*, se.server_url, se.title, se.port, ue.username
 FROM jumpserver
 INNER JOIN serverEntity AS se ON jumpserver.jumpsserver_serverId = se.server_id
 INNER JOIN userEntity AS ue ON jumpserver.jumpserver_userId = ue.user_id;
@@ -35,7 +34,7 @@ FROM jumpserver
 WHERE jumpserver_id = :id;
 
 getAllJumpserversByProxyId:
-SELECT jumpserver.*, se.server_url, se.title, ue.username
+SELECT jumpserver.*, se.server_url, se.title, se.port, ue.username
 FROM jumpserver
 LEFT JOIN serverEntity AS se ON jumpserver.jumpsserver_serverId = se.server_id
 LEFT JOIN userEntity AS ue ON jumpserver.jumpserver_userId = ue.user_id

@@ -3,12 +3,8 @@ package screens.server
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -84,7 +80,17 @@ internal fun ServerView(
                 errorHandling = true,
                 maxLines = 3
             ) {
-                serverVm.server = serverVm.server.copy(serverUrl = it)
+                serverVm.server = serverVm.server.copy(serverUrl = it.trim())
+            }
+            LabelAndField(
+                modifier = Modifier.fillMaxWidth().padding(top = MaterialTheme.spacing.small),
+                label = "Port",
+                value = serverVm.server.port.toString(),
+                errorHandling = true
+            ) {
+                if (it.all { input -> input.isDigit() }) {
+                    serverVm.server = serverVm.server.copy(port = it.trim().toLong())
+                }
             }
             LabelAndField(
                 Modifier.fillMaxWidth().padding(top = MaterialTheme.spacing.small),
@@ -111,10 +117,10 @@ internal fun ServerView(
             Row(
                 modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Max).padding(top = MaterialTheme.spacing.small)
             ) {
-                LabelComboboWithDeleteIcon(
+                LabelAndCombobox(
                     modifier = Modifier.weight(1.0f).padding(end = MaterialTheme.spacing.extraSmall),
                     label = "Jump Host",
-                    value = selectedProxy ,
+                    value = selectedProxy,
                     options = proxies,
                     onDelete = {
                         serverVm.server = serverVm.server.copy(proxyId = null)
@@ -181,7 +187,7 @@ private fun LabelAndField(
  * Display a Label together with a Textfield in a Row
  */
 @Composable
-private fun <T> LabelComboboWithDeleteIcon(
+private fun <T> LabelAndCombobox(
     modifier: Modifier,
     label: String,
     value: T?,
@@ -190,12 +196,13 @@ private fun <T> LabelComboboWithDeleteIcon(
     onSelect: (T) -> Unit
 ) {
     Row(
-        modifier = modifier,
+        modifier = modifier.height(IntrinsicSize.Min).fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
         Row(
-            modifier = Modifier.weight(0.3f).fillMaxSize().background(MaterialTheme.colors.onPrimary),
+            modifier = Modifier.weight(0.3f).fillMaxSize().background(MaterialTheme.colors.onPrimary)
+                .padding(top = MaterialTheme.spacing.medium, bottom = MaterialTheme.spacing.medium),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
@@ -205,14 +212,13 @@ private fun <T> LabelComboboWithDeleteIcon(
             )
         }
         TerminalCombobox(
-            modifier = Modifier.weight(0.6f).fillMaxHeight(),
+            modifier = Modifier.weight(0.7f).fillMaxSize(),
             selectedOption = value,
             options = options,
+            withClear = true,
+            deleteFn = onDelete,
             defaultToFirstItem = false
         ) { selected -> onSelect(selected) }
-        IconButton(modifier = Modifier.weight(0.1f), onClick = onDelete) {
-            Icon(Icons.Filled.Delete, "")
-        }
     }
 }
 

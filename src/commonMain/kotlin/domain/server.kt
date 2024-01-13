@@ -29,6 +29,7 @@ data class Server(
     val serverId: Long,
     var proxyId: Long?,
     var serverUrl: String,
+    var port: Long,
     var title: String,
     var organization: String,
     var description: String,
@@ -41,7 +42,8 @@ data class Server(
         serverId: Long,
         serverUrl: String,
         title: String,
-    ) : this(serverId, null, serverUrl, title, "", "", true, true, true, null)
+        port: Long
+    ) : this(serverId, null, serverUrl, port, title, "", "", true, true, true, null)
 
     constructor(
         serverUrl: String,
@@ -50,7 +52,7 @@ data class Server(
         description: String,
         syncServer: Boolean,
         defaultUserId: Long?
-    ) : this(-1L, null, serverUrl, title, organization, description, syncServer, true, true, defaultUserId)
+    ) : this(-1L, null, serverUrl, 22L, title, organization, description, syncServer, true, true, defaultUserId)
 
     override fun toString(): String {
         return title
@@ -70,6 +72,7 @@ fun ServerEntity.toServer() = Server(
     serverId = server_id,
     proxyId = proxy_id,
     serverUrl = server_url,
+    port = port,
     title = title,
     organization = organization,
     description = description,

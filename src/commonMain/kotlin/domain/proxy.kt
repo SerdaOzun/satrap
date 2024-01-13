@@ -19,10 +19,9 @@ data class JumpServer(
     val proxyId: Long,
     val order: Long,
     val user: User?,
-    val server: Server?,
-    val port: Long?
+    val server: Server?
 ) {
-    constructor(proxyId: Long, order: Long, port: Long? = 22) : this(-1L, proxyId, order, null, null, port)
+    constructor(proxyId: Long, order: Long) : this(-1L, proxyId, order, null, null)
 }
 
 fun GetAllJumpserversByProxyId.toJumpServer() = JumpServer(
@@ -30,6 +29,5 @@ fun GetAllJumpserversByProxyId.toJumpServer() = JumpServer(
     proxyId = proxy_id,
     order = jumpserver_order,
     user = User(jumpserver_userId ?: -1L, username ?: ""),
-    server = Server(jumpsserver_serverId ?: -1L, server_url ?: "", title ?: ""),
-    port = jumpserver_port
+    server = Server(jumpsserver_serverId ?: -1L, server_url ?: "", title ?: "", port ?: 22L)
 )

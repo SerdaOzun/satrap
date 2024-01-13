@@ -31,12 +31,11 @@ import screens.serverList.grid.TableCell
 import screens.userManagement.UserViewModel
 import ui.components.TerminalCombobox
 import ui.components.TerminalTextButton
-import ui.components.TerminalTextField
 import ui.components.terminalTheme
 import ui.theme.spacing
 
 @Composable
-fun ProxyConfiguration(
+fun JumpserverConfiguration(
     modifier: Modifier,
     proxy: Proxy?,
     proxyVM: ProxyViewModel,
@@ -157,19 +156,18 @@ private fun JumpServerItem(
             modifier = Modifier.weight(0.35f).fillMaxHeight(),
             selectedOption = jumpServer.user,
             defaultToFirstItem = false,
+            withClear = true,
+            deleteFn = { proxyVM.onEvent(ProxyEvent.InsertJumpserver(jumpServer.copy(user = null))) },
             options = allUsers
         ) { s -> proxyVM.onEvent(ProxyEvent.InsertJumpserver(jumpServer.copy(user = s))) }
+
         TerminalCombobox(
             modifier = Modifier.weight(0.35f).fillMaxHeight(),
             selectedOption = jumpServer.server,
             defaultToFirstItem = false,
             options = allServers
         ) { s -> proxyVM.onEvent(ProxyEvent.InsertJumpserver(jumpServer.copy(server = s))) }
-        TerminalTextField(modifier = Modifier.weight(0.1f), value = jumpServer.port?.toString() ?: "", onValueChange = {
-            if (it.trim().toCharArray().all { c -> c.isDigit() }) {
-                proxyVM.onEvent(ProxyEvent.InsertJumpserver(jumpServer.copy(port = it.trim().toLong())))
-            }
-        })
+
         IconButton(
             onClick = { proxyVM.onEvent(ProxyEvent.DeleteJumpserver(jumpServer)) },
             modifier = Modifier.weight(0.05f)

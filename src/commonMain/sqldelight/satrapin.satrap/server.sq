@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS serverEntity (
   server_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   proxy_id INTEGER,
   server_url TEXT NOT NULL,
+  port INTEGER NOT NULL,
   title TEXT NOT NULL,
   organization Text NOT NULL,
   description TEXT NOT NULL,
@@ -19,12 +20,12 @@ SELECT last_insert_rowid();
 
 insertServer:
 INSERT OR REPLACE
-INTO serverEntity(server_id, proxy_id, server_url, title, organization, description, syncServer, showSSHAgent, isSSHAgentDefault, defaultUserId)
-VALUES (?, ?, ?, ?, ?,?, ?, ?,?, ?);
+INTO serverEntity(server_id, proxy_id, server_url, port, title, organization, description, syncServer, showSSHAgent, isSSHAgentDefault, defaultUserId)
+VALUES (?, ?, ?, ?, ?,?, ?, ?,?, ?, ?);
 
 updateServer:
 UPDATE serverEntity
-SET proxy_id = ?, server_url = ?, title = ?, organization = ?, description = ?, syncServer = ?, showSSHAgent = ?, isSSHAgentDefault = ?, defaultUserId = ?
+SET proxy_id = ?, server_url = ?, port = ?, title = ?, organization = ?, description = ?, syncServer = ?, showSSHAgent = ?, isSSHAgentDefault = ?, defaultUserId = ?
 WHERE server_id = ?;
 
 getAllServers:
