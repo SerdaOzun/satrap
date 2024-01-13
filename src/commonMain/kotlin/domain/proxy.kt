@@ -1,7 +1,9 @@
 package domain
 
+import androidx.compose.runtime.Immutable
 import satrapinsatrap.GetAllJumpserversByProxyId
 
+@Immutable
 data class Proxy(
     val id: Long,
     val title: String,
@@ -14,6 +16,7 @@ data class Proxy(
     }
 }
 
+@Immutable
 data class JumpServer(
     val id: Long,
     val proxyId: Long,

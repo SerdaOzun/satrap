@@ -1,5 +1,6 @@
 package domain
 
+import androidx.compose.runtime.Immutable
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -17,6 +18,7 @@ interface UserDataSource {
     suspend fun getLastInsertedId(): Long?
 }
 
+@Immutable
 data class User(
     val userId: Long,
     val serverIds: List<Long>,

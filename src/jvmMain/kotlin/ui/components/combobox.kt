@@ -83,8 +83,10 @@ fun <T> TerminalMultiselectCombobox(
  * Important: Always selects the first item of available options, if selectedOption wasn't passed
  * @param modifier
  * @param selectedOption the selected Item of the combobox
- * @param defaultToFirstItem if the selectedOption is null, should it default to the first item of the options list?
  * @param options for selection in the combobox
+ * @param defaultToFirstItem if the selectedOption is null, should it default to the first item of the options list?
+ * @param withClear should it be possible to clear the selection
+ * @param deleteFn function to run when clearing the combobox
  * @param onClick on an item
  */
 @Composable

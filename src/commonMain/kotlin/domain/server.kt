@@ -1,5 +1,6 @@
 package domain
 
+import androidx.compose.runtime.Immutable
 import kotlinx.coroutines.flow.Flow
 import satrapinsatrap.ServerEntity
 
@@ -25,18 +26,19 @@ interface ServerDataSource {
  * @param description
  * @param syncServer should the server be sync with remote
  */
+@Immutable
 data class Server(
     val serverId: Long,
-    var proxyId: Long?,
-    var serverUrl: String,
-    var port: Long,
-    var title: String,
-    var organization: String,
-    var description: String,
-    var syncServer: Boolean,
-    var showSSHAgent: Boolean,
-    var isSSHAgentDefault: Boolean,
-    var defaultUserId: Long?
+    val proxyId: Long?,
+    val serverUrl: String,
+    val port: Long,
+    val title: String,
+    val organization: String,
+    val description: String,
+    val syncServer: Boolean,
+    val showSSHAgent: Boolean,
+    val isSSHAgentDefault: Boolean,
+    val defaultUserId: Long?
 ) {
     constructor(
         serverId: Long,
@@ -62,6 +64,7 @@ data class Server(
 /**
  * Includes the Server with additional data
  */
+@Immutable
 data class ServerComplete(
     val server: Server,
     val tags: List<Tag>,
