@@ -25,19 +25,39 @@ class SqlDelightJumpProxy(
         return proxyQueries.getLastInsertedId().executeAsOneOrNull()
     }
 
-    fun insertJumpserver(jumpserver: JumpServer): Long? {
+    fun insertJumpserver(jumpserver: JumpServer): Long? = jumpserver.run {
+        if (id >= 0) {
+            updateJumpserver(this)
+            id
+        } else {
+            jumpserverQueries.transactionWithResult {
+                jumpserverQueries.insert(
+                    null,
+                    proxy_id = proxyId,
+                    jumpserver_order = order,
+                    jumpserver_userId = user?.userId,
+                    jumpsserver_serverId = server?.serverId,
+                    jumpserver_port = port
+                )
+                jumpserverQueries.getLastInsertedId().executeAsOneOrNull()
+            }
+        }
+    }
+
+    private fun updateJumpserver(jumpserver: JumpServer): Long? {
         jumpserver.run {
-            jumpserverQueries.insert(
-                if (id < 0) null else id,
+            jumpserverQueries.update(
                 proxy_id = proxyId,
                 jumpserver_order = order,
                 jumpserver_userId = user?.userId,
                 jumpsserver_serverId = server?.serverId,
-                jumpserver_port = port
+                jumpserver_port = port,
+                jumpserver_id = id
             )
         }
         return jumpserverQueries.getLastInsertedId().executeAsOneOrNull()
     }
+
 
     fun getProxy(id: Long): Proxy? {
         val proxy = proxyQueries.get(id).executeAsOneOrNull()
@@ -75,7 +95,13 @@ class SqlDelightJumpProxy(
                 proxyId = it.proxy_id,
                 order = it.jumpserver_order!!,
                 user = it.jumpserver_userId?.let { id -> User(id, it.username!!) },
-                server = it.jumpsserver_serverId?.let { id -> Server(serverId = id, serverUrl = it.server_url!!, title = it.title!!) },
+                server = it.jumpsserver_serverId?.let { id ->
+                    Server(
+                        serverId = id,
+                        serverUrl = it.server_url!!,
+                        title = it.title!!
+                    )
+                },
                 port = it.jumpserver_port
             )
         }

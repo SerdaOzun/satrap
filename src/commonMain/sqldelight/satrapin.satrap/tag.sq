@@ -14,6 +14,11 @@ INSERT OR REPLACE
 INTO tagEntity(tag_id, tag, syncTag)
 VALUES (?, ?, ? );
 
+updateTag:
+UPDATE tagEntity
+SET tag=?, syncTag=?
+WHERE tag_id=?;
+
 getTagById:
 SELECT tag.*, tagserver.server_id
 FROM tagEntity AS tag

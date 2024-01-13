@@ -21,11 +21,14 @@ class SqlDelightUser(
     private val queries = db.userQueries
     private val userServerQueries = db.userServerQueries
 
-    override suspend fun insertUser(user: User): Long? {
-        with(user) {
-            return queries.transactionWithResult {
+    override suspend fun insertUser(user: User): Long? = user.run {
+        if (userId >= 0) {
+            updateUser(user)
+            userId
+        } else {
+            queries.transactionWithResult {
                 queries.insertUser(
-                    user_id = if (userId < 0) null else userId,
+                    user_id = null,
                     username = username,
                     role = role,
                     defaultUser = defaultUser,
@@ -39,6 +42,19 @@ class SqlDelightUser(
                 }
                 insertedUserId
             }
+        }
+    }
+
+    private fun updateUser(user: User) {
+        user.run {
+            queries.updateUser(
+                username = username,
+                role = role,
+                defaultUser = defaultUser,
+                syncUser = syncUser,
+                userLevelDescription = userLevelDescription,
+                user_id = userId,
+            )
         }
     }
 

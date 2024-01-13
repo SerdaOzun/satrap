@@ -22,6 +22,11 @@ INSERT OR REPLACE
 INTO serverEntity(server_id, proxy_id, server_url, title, organization, description, syncServer, showSSHAgent, isSSHAgentDefault, defaultUserId)
 VALUES (?, ?, ?, ?, ?,?, ?, ?,?, ?);
 
+updateServer:
+UPDATE serverEntity
+SET proxy_id = ?, server_url = ?, title = ?, organization = ?, description = ?, syncServer = ?, showSSHAgent = ?, isSSHAgentDefault = ?, defaultUserId = ?
+WHERE server_id = ?;
+
 getAllServers:
 SELECT *
 FROM serverEntity;

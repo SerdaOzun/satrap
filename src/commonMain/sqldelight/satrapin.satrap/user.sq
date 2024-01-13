@@ -17,6 +17,11 @@ INSERT OR REPLACE
 INTO userEntity(user_id, username, role, defaultUser, syncUser, userLevelDescription)
 VALUES (?, ?, ?, ?, ?, ?);
 
+updateUser:
+UPDATE userEntity
+SET username=?, role=?, defaultUser=?, syncUser=?, userLevelDescription=?
+WHERE user_id=?;
+
 getUserById:
 SELECT user.*, userserver.server_id
 FROM userEntity AS user

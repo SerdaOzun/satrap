@@ -21,22 +21,31 @@ class SqlDelightTag(
     private val queries = db.tagQueries
     private val tagServerQueries = db.tagServerQueries
 
-    override suspend fun insert(tag: Tag): Long? {
-        return queries.transactionWithResult {
-            queries.insertTag(
-                tag_id = if (tag.tagId < 0) null else tag.tagId,
-                tag = tag.tag,
-                syncTag = tag.syncTag
-            )
-            queries.getLastInsertedId().executeAsOneOrNull()
-        }?.let { insertedTagId ->
-            tag.serverIds.forEach { serverId ->
-                withContext(Dispatchers.IO) {
-                    addTagToServer(insertedTagId, serverId)
+    override suspend fun insert(tag: Tag): Long? = tag.run {
+        if (tagId >= 0) {
+            update(tag)
+            tagId
+        } else {
+            queries.transactionWithResult {
+                queries.insertTag(
+                    tag_id = if (tag.tagId < 0) null else tag.tagId,
+                    tag = tag.tag,
+                    syncTag = tag.syncTag
+                )
+                queries.getLastInsertedId().executeAsOneOrNull()
+            }?.let { insertedTagId ->
+                tag.serverIds.forEach { serverId ->
+                    withContext(Dispatchers.IO) {
+                        addTagToServer(insertedTagId, serverId)
+                    }
                 }
+                insertedTagId
             }
-            insertedTagId
         }
+    }
+
+    private fun update(tag: Tag) {
+        queries.updateTag(tag = tag.tag, syncTag = tag.syncTag, tag_id = tag.tagId)
     }
 
     override suspend fun get(id: Long): Tag {

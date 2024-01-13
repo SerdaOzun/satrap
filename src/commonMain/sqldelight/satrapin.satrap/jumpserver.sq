@@ -18,6 +18,11 @@ INSERT OR REPLACE
 INTO jumpserver(jumpserver_id, proxy_id, jumpserver_order, jumpserver_userId, jumpsserver_serverId, jumpserver_port)
 VALUES (?, ?, ?, ?, ?, ?);
 
+update:
+UPDATE jumpserver
+SET proxy_id=?, jumpserver_order=?, jumpserver_userId=?, jumpsserver_serverId=?, jumpserver_port=?
+WHERE jumpserver_id=?;
+
 getAllJumpservers:
 SELECT jumpserver.*, se.server_url, se.title, ue.username
 FROM jumpserver

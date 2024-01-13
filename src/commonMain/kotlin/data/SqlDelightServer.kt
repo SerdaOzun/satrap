@@ -18,10 +18,32 @@ class SqlDelightServer(
 
     private val queries = db.serverQueries
 
-    override suspend fun insert(server: Server): Long? = queries.transactionWithResult {
+    override fun insert(server: Server): Long? = server.run {
+        if (serverId >= 0) {
+            update(server)
+            serverId
+        } else {
+            queries.transactionWithResult {
+                queries.insertServer(
+                    null,
+                    proxyId,
+                    serverUrl,
+                    title,
+                    organization,
+                    description,
+                    syncServer,
+                    showSSHAgent,
+                    isSSHAgentDefault,
+                    defaultUserId
+                )
+                queries.getLastInsertedId().executeAsOneOrNull()
+            }
+        }
+    }
+
+    private fun update(server: Server) {
         server.run {
-            queries.insertServer(
-                if (serverId < 0) null else serverId,
+            queries.updateServer(
                 proxyId,
                 serverUrl,
                 title,
@@ -30,13 +52,13 @@ class SqlDelightServer(
                 syncServer,
                 showSSHAgent,
                 isSSHAgentDefault,
-                defaultUserId
+                defaultUserId,
+                serverId,
             )
-            queries.getLastInsertedId().executeAsOneOrNull()
         }
     }
 
-    override suspend fun get(id: Long): Server? {
+    override fun get(id: Long): Server? {
         return queries.getServerById(id).executeAsOneOrNull()?.toServer()
     }
 
@@ -50,7 +72,7 @@ class SqlDelightServer(
         }
     }
 
-    override suspend fun getLastInsertedId(): Long? {
+    override fun getLastInsertedId(): Long? {
         return queries.getLastInsertedId().executeAsOneOrNull()
     }
 }

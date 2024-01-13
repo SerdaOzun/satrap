@@ -9,11 +9,11 @@ import satrapinsatrap.ServerEntity
  * @see ServerComplete for additional data bundled with the Server such as users and tags
  */
 interface ServerDataSource {
-    suspend fun insert(server: Server): Long?
-    suspend fun get(id: Long): Server?
+    fun insert(server: Server): Long?
+    fun get(id: Long): Server?
     fun getServer(): Flow<List<Server>>
     suspend fun delete(id: Long)
-    suspend fun getLastInsertedId(): Long?
+    fun getLastInsertedId(): Long?
 }
 
 /**

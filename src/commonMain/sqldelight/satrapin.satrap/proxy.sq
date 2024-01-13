@@ -11,6 +11,11 @@ INSERT OR REPLACE
 INTO proxy(proxy_id, proxy_name)
 VALUES (?, ?);
 
+update:
+UPDATE proxy
+SET proxy_name = ?
+WHERE proxy_id = ?;
+
 getAll:
 SELECT *
 FROM proxy;
