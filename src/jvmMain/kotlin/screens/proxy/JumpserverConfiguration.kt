@@ -73,9 +73,8 @@ fun JumpserverConfiguration(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 TableCell("#", modifier = Modifier.weight(0.15f), fontWeight = FontWeight.Bold)
-                                TableCell("User", modifier = Modifier.weight(0.35f), fontWeight = FontWeight.Bold)
-                                TableCell("Server", modifier = Modifier.weight(0.35f), fontWeight = FontWeight.Bold)
-                                TableCell("Port", modifier = Modifier.weight(0.10f), fontWeight = FontWeight.Bold)
+                                TableCell("User", modifier = Modifier.weight(0.4f), fontWeight = FontWeight.Bold)
+                                TableCell("Server", modifier = Modifier.weight(0.4f), fontWeight = FontWeight.Bold)
                                 TableCell("", modifier = Modifier.weight(0.05f), fontWeight = FontWeight.Bold)
                             }
                         }
@@ -153,7 +152,7 @@ private fun JumpServerItem(
             Icon(Icons.Filled.KeyboardArrowDown, "")
         }
         TerminalCombobox(
-            modifier = Modifier.weight(0.35f).fillMaxHeight(),
+            modifier = Modifier.weight(0.4f).fillMaxHeight(),
             selectedOption = jumpServer.user,
             defaultToFirstItem = false,
             withClear = true,
@@ -162,7 +161,7 @@ private fun JumpServerItem(
         ) { s -> proxyVM.onEvent(ProxyEvent.InsertJumpserver(jumpServer.copy(user = s))) }
 
         TerminalCombobox(
-            modifier = Modifier.weight(0.35f).fillMaxHeight(),
+            modifier = Modifier.weight(0.4f).fillMaxHeight(),
             selectedOption = jumpServer.server,
             defaultToFirstItem = false,
             options = allServers
