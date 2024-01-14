@@ -1,3 +1,3 @@
 -keep class org.sqlite.** { *; }
--keep class kotlinx.coroutines.swing.SwingDispatcherFactory
+-keep class kotlinx.coroutines.** { *; }
 -dontwarn kotlinx.coroutines.slf4j.*

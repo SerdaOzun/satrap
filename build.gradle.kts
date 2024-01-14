@@ -66,17 +66,18 @@ compose {
                     proguard {
                         configurationFiles.from("proguard-rules.pro")
                         obfuscate.set(true)
+                        optimize.set(true)
                     }
                 }
-                windows {
-                    iconFile.set(project.file("src/jvmMain/resources/satrap_logo.ico"))
-                }
-                macOS {
-                    iconFile.set(project.file("src/jvmMain/resources/satrap_logo.icns"))
-                }
-                linux {
-                    iconFile.set(project.file("src/jvmMain/resources/satrap_logo.png"))
-                }
+//                windows {
+//                    iconFile.set(project.file("src/jvmMain/resources/satrap_logo.ico"))
+//                }
+//                macOS {
+//                    iconFile.set(project.file("src/jvmMain/resources/satrap_logo.icns"))
+//                }
+//                linux {
+//                    iconFile.set(project.file("src/jvmMain/resources/satrap_logo.png"))
+//                }
             }
         }
     }
