@@ -17,18 +17,26 @@ class SqlDelightJumpProxy(
     private val proxyQueries = db.proxyQueries
     private val jumpserverQueries = db.jumpserverQueries
 
-    fun insertProxy(proxy: Proxy): Long? {
-        proxyQueries.insert(
-            if (proxy.id < 0) null else proxy.id,
-            proxy.title
-        )
-        return proxyQueries.getLastInsertedId().executeAsOneOrNull()
+    fun insertProxy(proxy: Proxy): Long? = proxy.run {
+        if (id >= 0) {
+            updateProxy(proxy)
+        } else {
+            proxyQueries.insert(
+                if (proxy.id < 0) null else proxy.id,
+                proxy.title
+            )
+            proxyQueries.getLastInsertedId().executeAsOneOrNull()
+        }
+    }
+
+    private fun updateProxy(proxy: Proxy): Long {
+        proxyQueries.update(proxy.title, proxy.id)
+        return proxy.id
     }
 
     fun insertJumpserver(jumpserver: JumpServer): Long? = jumpserver.run {
         if (id >= 0) {
             updateJumpserver(this)
-            id
         } else {
             jumpserverQueries.transactionWithResult {
                 jumpserverQueries.insert(
@@ -43,7 +51,7 @@ class SqlDelightJumpProxy(
         }
     }
 
-    private fun updateJumpserver(jumpserver: JumpServer): Long? {
+    private fun updateJumpserver(jumpserver: JumpServer): Long {
         jumpserver.run {
             jumpserverQueries.update(
                 proxy_id = proxyId,
@@ -53,7 +61,7 @@ class SqlDelightJumpProxy(
                 jumpserver_id = id
             )
         }
-        return jumpserverQueries.getLastInsertedId().executeAsOneOrNull()
+        return jumpserver.id
     }
 
 

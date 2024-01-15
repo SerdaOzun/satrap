@@ -24,7 +24,6 @@ class SqlDelightTag(
     override suspend fun insert(tag: Tag): Long? = tag.run {
         if (tagId >= 0) {
             update(tag)
-            tagId
         } else {
             queries.transactionWithResult {
                 queries.insertTag(
@@ -44,8 +43,9 @@ class SqlDelightTag(
         }
     }
 
-    private fun update(tag: Tag) {
+    private fun update(tag: Tag): Long {
         queries.updateTag(tag = tag.tag, syncTag = tag.syncTag, tag_id = tag.tagId)
+        return tag.tagId
     }
 
     override suspend fun get(id: Long): Tag {
