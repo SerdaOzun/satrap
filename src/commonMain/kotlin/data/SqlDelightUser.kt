@@ -24,7 +24,6 @@ class SqlDelightUser(
     override suspend fun insertUser(user: User): Long? = user.run {
         if (userId >= 0) {
             updateUser(user)
-            userId
         } else {
             queries.transactionWithResult {
                 queries.insertUser(
@@ -45,7 +44,7 @@ class SqlDelightUser(
         }
     }
 
-    private fun updateUser(user: User) {
+    private fun updateUser(user: User): Long {
         user.run {
             queries.updateUser(
                 username = username,
@@ -56,6 +55,7 @@ class SqlDelightUser(
                 user_id = userId,
             )
         }
+        return user.userId
     }
 
     override suspend fun getUserById(id: Long): User {

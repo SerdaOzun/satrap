@@ -21,7 +21,6 @@ class SqlDelightServer(
     override fun insert(server: Server): Long? = server.run {
         if (serverId >= 0) {
             update(server)
-            serverId
         } else {
             queries.transactionWithResult {
                 queries.insertServer(
@@ -42,7 +41,7 @@ class SqlDelightServer(
         }
     }
 
-    private fun update(server: Server) {
+    private fun update(server: Server): Long {
         server.run {
             queries.updateServer(
                 proxyId,
@@ -58,6 +57,7 @@ class SqlDelightServer(
                 serverId,
             )
         }
+        return server.serverId
     }
 
     override fun get(id: Long): Server? {
