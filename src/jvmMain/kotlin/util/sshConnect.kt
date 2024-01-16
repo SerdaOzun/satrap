@@ -26,6 +26,13 @@ private fun executeOnWindows(command: String) {
             process.waitFor()
         }
 
+        Terminal.GIT_BASH -> {
+            val bashExe = "C:/Program Files/Git/git-bash.exe"
+            val builder = ProcessBuilder(bashExe, "-c", command)
+            val process = builder.inheritIO().start()
+            process.waitFor()
+        }
+
         else -> {}
     }
 

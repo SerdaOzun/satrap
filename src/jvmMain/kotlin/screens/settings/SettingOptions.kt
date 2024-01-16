@@ -11,8 +11,9 @@ enum class SettingOptions(val label: String) {
 }
 
 enum class Terminal(val label: String, val os: OS) {
-    CMD("cmd.exe", OS.WINDOWS),
-    POWERSHELL("powershell.exe", OS.WINDOWS),
+    CMD("cmd", OS.WINDOWS),
+    POWERSHELL("powershell", OS.WINDOWS),
+    GIT_BASH("git-bash", OS.WINDOWS),
     TERMINAL("Terminal", OS.MACOS),
     ITERM("iTerm2", OS.MACOS),
     GNOME_TERMINAL("gnome-terminal", OS.LINUX);
