@@ -27,6 +27,7 @@ fun TagManagementScreen(
 ) {
 
     val tags by tagVm.allTags.collectAsState(initial = emptyList())
+    val sortedTags = remember(tags) { tags.sortedBy { it.tag.lowercase() } }
 
     var selectedTagId by remember { mutableStateOf(-1L) }
 
@@ -48,7 +49,7 @@ fun TagManagementScreen(
                     }
                 }
                 //List of users
-                items(tags) { tag ->
+                items(sortedTags) { tag ->
                     TagItem(tag, selectedTagId) { selectedTagId = it ?: -1 }
                 }
             }

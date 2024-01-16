@@ -10,6 +10,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -29,6 +30,9 @@ fun FilterPanel(
     val allUsers by userVM.allUsers.collectAsState(emptyList())
     val allTags by tagVM.allTags.collectAsState(emptyList())
 
+    val sortedUsers = remember(allUsers) { allUsers.distinctBy { it.userId }.sortedBy { it.username.lowercase() } }
+    val sortedTags = remember(allTags) { allTags.sortedBy { it.tag.lowercase() } }
+
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.Top,
@@ -46,9 +50,9 @@ fun FilterPanel(
             TerminalMultiselectCombobox(
                 modifier = Modifier,
                 filterName = "User",
-                userVM.filteredUsers.distinctBy { it.userId },
-                allUsers.distinctBy { it.userId },
-                { selectedOptions, selected -> selectedOptions.map { it.userId }.contains(selected.userId)},
+                selectedOptions = userVM.filteredUsers,
+                allOptions = sortedUsers,
+                contains = { selectedOptions, selected -> selectedOptions.map { it.userId }.contains(selected.userId)},
                 onClick = { user ->
                     if (userVM.filteredUsers.map { u -> u.userId }.contains(user.userId)) userVM.filteredUsers.removeIf { it.userId == user.userId}
                     else userVM.filteredUsers.add(user)
@@ -60,8 +64,8 @@ fun FilterPanel(
             TerminalMultiselectCombobox(
                 modifier = Modifier.weight(0.3f),
                 filterName = "Tag",
-                selectedOptions = tagVM.filteredTags.distinctBy { it.tagId },
-                allOptions = allTags.distinctBy { it.tagId },
+                selectedOptions = tagVM.filteredTags,
+                allOptions = sortedTags,
                 { selectedOptions, selected -> selectedOptions.map { it.tagId }.contains(selected.tagId)},
                 onClick = { tag ->
                     if (tagVM.filteredTags.map { it.tagId }.contains(tag.tagId)) tagVM.filteredTags.removeIf { it.tagId == tag.tagId }

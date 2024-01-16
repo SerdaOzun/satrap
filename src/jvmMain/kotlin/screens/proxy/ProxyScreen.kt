@@ -23,6 +23,7 @@ fun ProxyScreen(
 ) {
 
     val proxies by proxyVM.proxies.collectAsState(initial = emptyList())
+    val sortedProxies = remember(proxies) { proxies.sortedBy { it.title.lowercase() } }
     var selectedProxyId by remember { mutableStateOf(-1L) }
 
     LaunchedEffect(Unit) {
@@ -46,7 +47,7 @@ fun ProxyScreen(
                     }
                 }
                 //List of proxies
-                items(proxies) { proxy ->
+                items(sortedProxies) { proxy ->
                     ProxyItem(proxy, selectedProxyId) { selectedProxyId = it }
                 }
             }

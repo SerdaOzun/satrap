@@ -27,6 +27,7 @@ fun UserManagementScreen(
 ) {
 
     val users by userVm.allUsers.collectAsState(initial = emptyList())
+    val sortedUsers = remember(users) { users.sortedBy { it.username.lowercase() } }
 
     var selectedUserId by remember { mutableStateOf(-1L) }
 
@@ -48,7 +49,7 @@ fun UserManagementScreen(
                     }
                 }
                 //List of users
-                items(users) { user ->
+                items(sortedUsers) { user ->
                     UserItem(user, selectedUserId) { selectedUserId = it }
                 }
             }

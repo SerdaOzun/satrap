@@ -42,6 +42,12 @@ fun ServerGrid(
     val servers by serverVM.servers.collectAsState(initial = emptyList())
     var selectedId by remember { mutableStateOf(-1L) }
 
+    val sortedServers = remember(servers, getServerCompleteComparator(serverVM.serverNameSortingAscending)) {
+        servers.filterSearch(serverVM, userVM, tagVM)
+            .sortedWith(getServerCompleteComparator(serverVM.serverNameSortingAscending))
+    }
+
+
     Column(modifier.fillMaxSize()) {
         Headers(
             Modifier.weight(0.1f)
@@ -66,9 +72,8 @@ fun ServerGrid(
                     }
                 } else {
                     itemsIndexed(
-                        items = servers.filterSearch(serverVM, userVM, tagVM)
-                            .sortedWith(getServerCompleteComparator(serverVM.serverNameSortingAscending)),
-                        key = { index, s -> s.server.serverId ?: index }
+                        items = sortedServers,
+                        key = { _, s -> s.server.serverId }
                     ) { _, it ->
                         ServerItem(it, selectedId) { s ->
                             selectedId = s
@@ -96,8 +101,18 @@ fun ServerGrid(
 }
 
 @Composable
-fun RowScope.TableCell(text: String, textColor: Color = MaterialTheme.colors.onPrimary, modifier: Modifier = Modifier, fontWeight: FontWeight = FontWeight.Normal) {
-    Text(text = text, color = textColor, modifier = modifier.padding(MaterialTheme.spacing.small), fontWeight = fontWeight)
+fun RowScope.TableCell(
+    text: String,
+    textColor: Color = MaterialTheme.colors.onPrimary,
+    modifier: Modifier = Modifier,
+    fontWeight: FontWeight = FontWeight.Normal
+) {
+    Text(
+        text = text,
+        color = textColor,
+        modifier = modifier.padding(MaterialTheme.spacing.small),
+        fontWeight = fontWeight
+    )
 }
 
 @Composable
